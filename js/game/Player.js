@@ -115,6 +115,7 @@ Player.prototype.update = function ()
 	/* Walking input */
 
 	var inputDir = new Phaser.Point( 0, 0 );
+	console.log(this.allowInput ? "Allowing input" : "Blocking input!!!");
 	if ( this.allowInput )
 	{
 		if ( this.keys.up.justDown || this.keys.w.justDown )
@@ -129,6 +130,7 @@ Player.prototype.update = function ()
 
 	var direction = this.direction;
 	if ( inputDir.getMagnitude() > 0 ) {
+		console.log("Got input", inputDir.x, inputDir.y);
 		if ( Math.abs( inputDir.x ) >= Math.abs( inputDir.y ) )
 			direction = inputDir.x > 0 ? 'right' : 'left';
 		else
@@ -144,6 +146,7 @@ Player.prototype.update = function ()
 					this.sprite.goalY += inputDir.y * 16;
 					Global.Audio.play( 'boxPush' );
 					this.updateCount();
+					console.log("Moving!");
 				}
 				else
 				{
@@ -151,6 +154,9 @@ Player.prototype.update = function ()
 				}
 				Global.World.revealTile( gridX + inputDir.x, gridY + inputDir.y );
 			}
+		}
+		else {
+			console.log("Turning!");
 		}
 	}
 
