@@ -58,6 +58,9 @@ EnemyManager.prototype.addMiss = function( x, y ) {
 		s.animations.play( 'idle' );
 		s.alpha = 0.8;
 	}
+	else{
+		s.animations.stop();
+	}
 
 	return s;
 };
