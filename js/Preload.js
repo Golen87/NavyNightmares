@@ -85,8 +85,7 @@ Global.Preload.prototype = {
 	create: function () {
 		this.setup();
 
-		this.state.start( 'Game' );
-		//this.state.start( 'MainMenu' );
+		this.state.start( 'MainMenu' );
 	},
 	fileComplete: function ( progress, cacheKey, success, totalLoaded, totalFiles ) {}
 };
