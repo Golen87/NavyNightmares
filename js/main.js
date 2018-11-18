@@ -8,7 +8,7 @@ const SCREEN_HEIGHT = ROOM_HEIGHT * 16;
 var config = {
 	width: SCREEN_WIDTH,
 	height: SCREEN_HEIGHT,
-	renderer: Phaser.AUTO,
+	renderer: Phaser.CANVAS,
 	parent: "TITLE HERE",
 	state: null,
 	transparent: false,

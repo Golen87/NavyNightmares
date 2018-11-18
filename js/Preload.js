@@ -32,10 +32,35 @@ Global.Preload.prototype = {
 		this.load.spritesheet( 'monsters', 'assets/sprites/monsters.png', 16, 16 );
 		this.load.spritesheet( 'player', 'assets/sprites/player.png', 32, 32 );
 		this.load.spritesheet( 'harpoon', 'assets/sprites/harpoon.png', 64, 64 );
+		this.load.spritesheet( 'menubg', 'assets/sprites/menubg.png', 192, 192 );
+
 		this.load.spritesheet( 'smoke', 'assets/sprites/smoke.png', 9, 9 );
 		this.load.spritesheet( 'sparkle', 'assets/sprites/sparkle.png', 9, 9 );
 		this.load.spritesheet( 'rubble', 'assets/sprites/rubble.png', 5, 5 );
 		this.load.spritesheet( 'fire', 'assets/sprites/fire.png', 16, 16 );
+
+		this.load.audio( 'footsteps', 'assets/sounds/footsteps.ogg' );
+		this.load.audio( 'eating', 'assets/sounds/eating.ogg' );
+		this.load.audio( 'swing', 'assets/sounds/swing.ogg' );
+		this.load.audio( 'chop', 'assets/sounds/chop.ogg' );
+		this.load.audio( 'hurt', 'assets/sounds/hurt.ogg' );
+		this.load.audio( 'death', 'assets/sounds/death.ogg' );
+
+		this.load.audio( 'break', 'assets/sounds/break.ogg' );
+		this.load.audio( 'boxPush', 'assets/sounds/boxPush.ogg' );
+		this.load.audio( 'blockPush', 'assets/sounds/blockPush.ogg' );
+		this.load.audio( 'crystal', 'assets/sounds/crystal.ogg' );
+		this.load.audio( 'spikes', 'assets/sounds/spikes.ogg' );
+		this.load.audio( 'open', 'assets/sounds/open.ogg' );
+		this.load.audio( 'pressureplate', 'assets/sounds/pressureplate.ogg' );
+
+		this.load.audio( 'rat', 'assets/sounds/monsters/rat.ogg' );
+		this.load.audio( 'mouse', 'assets/sounds/monsters/mouse.ogg' );
+		this.load.audio( 'rhino', 'assets/sounds/monsters/rhino.ogg' );
+		this.load.audio( 'spider', 'assets/sounds/monsters/spider.ogg' );
+		this.load.audio( 'slime', 'assets/sounds/monsters/slime.ogg' );
+		this.load.audio( 'creature', 'assets/sounds/monsters/creature.ogg' );
+		this.load.audio( 'monsterroom-spawn', 'assets/sounds/monsters/monsterroom-spawn.ogg' );
 
 		this.load.audio( 'menu', 'assets/sounds/menu.ogg' );
 
@@ -60,8 +85,8 @@ Global.Preload.prototype = {
 	create: function () {
 		this.setup();
 
-		//this.state.start( 'MainMenu' );
 		this.state.start( 'Game' );
+		//this.state.start( 'MainMenu' );
 	},
 	fileComplete: function ( progress, cacheKey, success, totalLoaded, totalFiles ) {}
 };

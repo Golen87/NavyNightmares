@@ -7,6 +7,8 @@ function Player ()
 	this.prevGridPos = new Phaser.Point(0, 0);
 	this.gridPos = new Phaser.Point(0, 0);
 
+	this.harpoonCount = 10;
+
 	this.allowInput = true;
 }
 
@@ -75,7 +77,7 @@ Player.prototype.setupAnimation = function ()
 
 
 	var len = 6;
-	var fire = [0,1,2,3,4,5];
+	var fire = [0,1,2,3,4];
 	this.harpoon.animations.add( 'fire_up', fire, 8, true );
 	fire = fire.map( n => n + len );
 	this.harpoon.animations.add( 'fire_right', fire, 8, true );
@@ -140,6 +142,7 @@ Player.prototype.update = function ()
 				if ( !Global.World.checkEnemyAt( gridX + inputDir.x, gridY + inputDir.y ) ) {
 					this.sprite.goalX += inputDir.x * 16;
 					this.sprite.goalY += inputDir.y * 16;
+					Global.Audio.play( 'boxPush' );
 					this.updateCount();
 				}
 				else
@@ -182,6 +185,8 @@ Player.prototype.update = function ()
 			this.harpoon.x = this.sprite.x;
 			this.harpoon.y = this.sprite.y;
 
+			Global.Audio.play( 'swing' );
+
 			this.allowInput = false;
 			Global.game.time.events.add( Phaser.Timer.SECOND * 2 / 16, function() {
 
@@ -191,13 +196,16 @@ Player.prototype.update = function ()
 
 			}, this );
 
-			Global.game.time.events.add( Phaser.Timer.SECOND * 6 / 16, function() {
+			Global.game.time.events.add( Phaser.Timer.SECOND * 5 / 16, function() {
 
-				this.allowInput = true;
+				function reviveInput() {
+					this.allowInput = true;
+					Global.game.input.reset();
+				}
 
 				var dx = (this.direction == 'right') - (this.direction == 'left');
 				var dy = (this.direction == 'down') - (this.direction == 'up');
-				Global.World.attackTile( gridX+dx, gridY+dy );
+				Global.World.attackTile( gridX+dx, gridY+dy, reviveInput.bind(this) );
 				Global.World.revealTile( gridX+dx, gridY+dy );
 				this.updateCount();
 
@@ -238,6 +246,8 @@ Player.prototype.updateCount = function ()
 
 Player.prototype.damage = function ()
 {
+	this.allowInput = false;
+
 	this.health -= 1;
 	if ( this.health >= 0 )
 		Global.Gui.lifePoint[this.health].tint = 0x444444;
@@ -247,7 +257,7 @@ Player.prototype.damage = function ()
 
 	// Move please
 	Global.Audio.play( 'chop' );
-	Global.World.cameraShake( 10 );
+	Global.World.cameraShake( 15 );
 
 
 	if ( this.health <= 0 )
@@ -263,10 +273,9 @@ Player.prototype.damage = function ()
 Player.prototype.hurt = function ()
 {
 	this.damageState = 'hurt';
-	Global.Audio.play( 'hurt' );
 	this.setAnimation( 'hurt', this.direction );
 
-	Global.game.time.events.add( Phaser.Timer.SECOND * 0.6, this.damageOver, this );
+	Global.game.time.events.add( Phaser.Timer.SECOND * 0.3, this.damageOver, this );
 
 	if ( !this.damageStepActive )
 	{
@@ -277,10 +286,8 @@ Player.prototype.hurt = function ()
 
 Player.prototype.defeat = function ()
 {
-	this.allowInput = false;
 	this.setAnimation( 'hurt', this.direction );
 	this.damageState = 'dead';
-	Global.Audio.play( 'hurt' );
 	Global.World.cameraShake( 16 );
 	Global.cinematic = true;
 
@@ -290,13 +297,7 @@ Player.prototype.defeat = function ()
 		this.damageStep();
 	}
 
-	Global.game.time.events.add( Phaser.Timer.SECOND * 1.0, function() {
-		Global.World.cameraShake( 8 );
-	}, this );
-	Global.game.time.events.add( Phaser.Timer.SECOND * 2.0, function() {
-		Global.World.cameraShake( 4 );
-	}, this );
-	Global.game.time.events.add( Phaser.Timer.SECOND * 2.5, this.gameOver, this );
+	Global.game.time.events.add( Phaser.Timer.SECOND * 1.0, this.gameOver, this );
 };
 
 Player.prototype.damageStep = function ()
@@ -319,6 +320,10 @@ Player.prototype.damageOver = function ()
 	this.damageState = 'idle';
 	this.sprite.alpha = 1.0;
 	this.sprite.tint = 0xffffff;
+
+	this.allowInput = true;
+	this.bubble.kill();
+	Global.game.input.reset();
 };
 
 Player.prototype.gameOver = function ()

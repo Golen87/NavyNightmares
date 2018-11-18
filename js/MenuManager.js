@@ -61,7 +61,7 @@ MenuManager.prototype.createMenu = function ( x, y, choiceList )
 		var label = Global.game.add.bitmapText( x, y, 'TinyUnicode', this.choiceList[i][0], 16 );
 		label.anchor.x = Math.round(label.textWidth / 2) / label.textWidth;
 		label.anchor.y = Math.round(label.textHeight / 2) / label.textHeight;
-		label.tint = 0x777777;
+		label.tint = 0x333333;
 		label.function = this.choiceList[i][1];
 		this.labels.push( label );
 		y += this.separation;
@@ -100,7 +100,7 @@ MenuManager.prototype.nextMenu = function ( choiceList )
 	{
 		var label = Global.game.add.bitmapText( x, y, 'TinyUnicode', this.choiceList[i][0], 16 );
 		label.anchor.set( 0.5 );
-		label.tint = 0x777777;
+		label.tint = 0x333333;
 		label.function = this.choiceList[i][1];
 		this.labels.push( label );
 		y += this.separation;
@@ -179,7 +179,7 @@ MenuManager.prototype.nextChoice = function ( inc )
 {
 	if ( this.allowInput )
 	{
-		this.labels[this.selection].tint = 0x777777;
+		this.labels[this.selection].tint = 0x333333;
 
 		this.selection += inc + this.labels.length; // Avoid negative modulo
 		this.selection %= this.labels.length;
@@ -194,7 +194,7 @@ MenuManager.prototype.nextChoice = function ( inc )
 			var y = this.labels[this.selection].y - corner.scale.y * 4;
 			if ( corner.x == 0 && corner.y == 0 )
 			{
-				corner.x = this.startPosition.x - corner.scale.x * 44;
+				corner.x = this.startPosition.x - corner.scale.x * 30;
 				corner.startX = corner.x;
 				corner.y = y;
 			}

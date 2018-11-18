@@ -9,15 +9,28 @@ Global.MainMenu.prototype = {
 		// Particles need to move
 		Global.game.physics.arcade.isPaused = false;
 
+		this.background = Global.game.add.sprite( 0, 0, 'menubg' );
+		this.background.animations.add( 'idle', [0,1], 2.5, true );
+		this.background.animations.play( 'idle' );
 
-		/* Subtitle */
+		Global.game.camera.flash( 0xffffff, 500 );
+
+
+
 		x = SCREEN_WIDTH / 2;
-		y = 60;
-		var text = this.add.bitmapText( x, y, 'Pixelade', 'Navy Nightmare', 13 );
+		y = 11;
+		var text = this.add.bitmapText( x+1, y, 'Pixelade', 'Navy Nightmare', 26 );
+		text.tint = 0x000077;
+		text.anchor.x = 0.5;
+
+		x = SCREEN_WIDTH / 2;
+		y = 10;
+		var text = this.add.bitmapText( x, y, 'Pixelade', 'Navy Nightmare', 26 );
+		text.tint = 0xffffff;
 		text.anchor.x = 0.5;
 
 		/* Selection menu */
-		y += 30;
+		y += 38;
 		this.menuManager = new MenuManager();
 		this.setupMenus();
 		this.menuManager.createMenu( SCREEN_WIDTH/2, y, this.startMenu );
@@ -46,7 +59,6 @@ Global.MainMenu.prototype.setupMenus = function ()
 
 	this.startMenu = [
 		[ 'play', play.bind(this) ],
-		[ 'options', options.bind(this) ],
 		[ 'credits', credits.bind(this) ],
 	];
 

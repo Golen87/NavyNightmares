@@ -53,7 +53,7 @@ GuiManager.prototype.setupMenus = function ()
 
 	this.pauseMenu = [
 		[ 'resume', resume.bind(this) ],
-		[ 'options', options.bind(this) ],
+		//[ 'options', options.bind(this) ],
 		[ 'quit', quit.bind(this) ],
 	];
 
@@ -85,8 +85,8 @@ GuiManager.prototype.setupMenus = function ()
 		{
 			this.menuManager.allowInput = false;
 
-			Global.game.camera.fade(0x111111, 700);
-			Global.game.time.events.add( 700, function() {
+			Global.game.camera.fade(0xffffff, 300);
+			Global.game.time.events.add( 400, function() {
 				Global.game.state.start( 'MainMenu' );
 			}, this);
 		}
@@ -120,15 +120,11 @@ GuiManager.prototype.showPauseMenu = function ()
 	this.darkFg.endFill();
 
 	var x = c.x+SCREEN_WIDTH/2;
-	var y = c.y + 32;
+	var y = c.y + 64;
 
-	this.choiceTitle = Global.game.add.bitmapText( x, y, 'OldWizard', 'Pause', 16 );
+	this.choiceTitle = Global.game.add.bitmapText( x, y, 'TinyUnicode', 'Pause', 16*2 );
 	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
-	y += 28;
-	this.menuItem = Global.game.add.sprite( x, y, 'items', randInt(0,8*9-1) );
-	this.menuItem.anchor.set( 0.5 );
-
-	y += 28;
+	y += 24;
 	this.menuManager.createMenu( x, y, this.pauseMenu );
 
 	Global.Audio.play( 'menu', 'open' );
@@ -140,10 +136,11 @@ GuiManager.prototype.hidePauseMenu = function ()
 
 	this.darkBg.clear();
 	this.darkFg.clear();
-	this.menuItem.kill();
 	this.choiceTitle.kill();
 
 	this.menuManager.killMenu();
+
+	Global.game.input.reset();
 
 	Global.Audio.play( 'menu', 'close' );
 };
@@ -157,28 +154,20 @@ GuiManager.prototype.showGameOver = function ()
 	var y = c.y + SCREEN_HEIGHT/2;
 
 	this.darkBg = Global.game.add.graphics( c.x, c.y );
-	this.darkBg.beginFill( 0x000000, 0.75 );
+	this.darkBg.beginFill( 0x000000, 0.7 );
 	this.darkBg.drawRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 	this.darkBg.endFill();
 	this.darkBg.alpha = 0;
-	this.darkBg.blendMode = Phaser.blendModes.OVERLAY;
-	Global.game.add.tween( this.darkBg ).to({ alpha: 0.5 }, 1500, Phaser.Easing.Linear.In, true );
+	Global.game.add.tween( this.darkBg ).to({ alpha: 1.0 }, 800, Phaser.Easing.Linear.In, true );
 
-	this.choiceTitleBg = Global.game.add.bitmapText( x+1, y+1, 'OldWizard', 'Game Over', 32 );
-	this.choiceTitleBg.anchor.setTo( 0.5, 0.5 );
-	this.choiceTitleBg.tint = 0x000000;
-	this.choiceTitle = Global.game.add.bitmapText( x, y, 'OldWizard', 'Game Over', 32 );
-	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
-	this.choiceTitle.tint = 0xE64A19;
+	this.choiceTitle = Global.game.add.bitmapText( x, y, 'TinyUnicode', 'Game Over', 16*2 );
+	this.choiceTitle.anchor.setTo( 0.5, 0.65 );
+	this.choiceTitle.tint = 0xFF0000;
 
-	this.choiceTitle.x -= 16;
 	this.choiceTitle.alpha = 0;
-	this.choiceTitleBg.x += 16;
-	this.choiceTitleBg.alpha = 0;
-	Global.game.add.tween( this.choiceTitle ).to({ x: x, alpha: 1 }, 1500, Phaser.Easing.Quadratic.Out, true );
-	Global.game.add.tween( this.choiceTitleBg ).to({ x: x+1, alpha: 1 }, 1500, Phaser.Easing.Quadratic.Out, true );
+	Global.game.add.tween( this.choiceTitle ).to({ alpha: 1 }, 800, Phaser.Easing.Quadratic.Out, true );
 
-	Global.game.time.events.add( 2000, function() {
+	Global.game.time.events.add( 1000, function() {
 		var x = c.x + SCREEN_WIDTH/2;
 		var y = c.y + SCREEN_HEIGHT - 20;
 		this.menuManager.allowInput = true;

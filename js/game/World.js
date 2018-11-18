@@ -9,6 +9,7 @@ function World ()
 World.prototype.create = function ()
 {
 	Global.game.world.setBounds( -Infinity, -Infinity, Infinity, Infinity );
+	//Global.game.world.setBounds( -10, -10, 10, 10 );
 
 	this.oceanBg = Global.game.add.tileSprite( -16, -16, (ROOM_WIDTH+2) * 16, (ROOM_HEIGHT+2) * 16, 'tileset', posToIndex( 'tileset', Tiles.Water.pos) );
 	//this.gridBg = Global.game.add.tileSprite( 0, 0, ROOM_WIDTH * 16, ROOM_HEIGHT * 16, 'tileset', posToIndex( 'tileset', [0,6] ) );
@@ -152,10 +153,14 @@ World.prototype.checkCloudAt = function ( x, y )
 	return this.cloudManager.checkCloudAt( x, y );
 };
 
-World.prototype.attackTile = function ( x, y )
+World.prototype.attackTile = function ( x, y, reviveInput )
 {
-	this.enemyManager.attack( x, y );
-	this.enemyManager.loadArea( this.camGoal.x, this.camGoal.y );
+	function callback() {
+		this.enemyManager.loadArea( this.camGoal.x, this.camGoal.y );
+		reviveInput();
+	}
+
+	this.enemyManager.attack( x, y, callback.bind(this) );
 };
 
 World.prototype.revealTile = function ( x, y )

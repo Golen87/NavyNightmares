@@ -25,25 +25,49 @@ LandManager.prototype.generateTile = function ( x, y )
 
 LandManager.prototype.addLand = function( x, y, dx, dy, index ) {
 	if (this.isTile( x+dx, y+dy, TileTypes.Land )) {
-		this.addSprite( x, y, Tiles.Land.pos[index] );
+		var s = this.addSprite( x, y, 0 );
+
+		var frames = Tiles.Land.pos[index].toIndex( this.tileset );
+		s.animations.add( 'idle', frames, 1, true );
+		s.animations.play( 'idle' );
+
+		return s;
+	}
+};
+
+LandManager.prototype.addLandEdge = function( x, y, dx, dy, index ) {
+	if (this.isTile( x+dx, y+dy, TileTypes.Land ) && !this.isTile( x+dx, y, TileTypes.Land ) && !this.isTile( x, y+dy, TileTypes.Land )) {
+		var s = this.addSprite( x, y, 0 );
+
+		var frames = Tiles.Land.pos[index].toIndex( this.tileset );
+		s.animations.add( 'idle', frames, 1, true );
+		s.animations.play( 'idle' );
+
+		return s;
 	}
 };
 
 LandManager.prototype.addLandCorner = function( x, y, dx, dy, index ) {
 	if (this.isTile( x+dx, y, TileTypes.Land ) && this.isTile( x, y+dy, TileTypes.Land )) {
-		this.addSprite( x, y, Tiles.Land.pos[index] );
+		var s = this.addSprite( x, y, 0 );
+
+		var frames = Tiles.Land.pos[index].toIndex( this.tileset );
+		s.animations.add( 'idle', frames, 1, true );
+		s.animations.play( 'idle' );
+
+		return s;
 	}
 };
 
 LandManager.prototype.createTile = function( x, y ) {
 	if ( this.isTile( x, y, TileTypes.Water ) ) {
-		this.addLand(x, y, +1, -1, 6);
-		this.addLand(x, y, -1, -1, 8);
+		this.addLandEdge(x, y, +1, -1, 6);
+		this.addLandEdge(x, y, -1, -1, 8);
 		this.addLand(x, y, +0, -1, 7);
 		this.addLand(x, y, +1, +0, 3);
 		this.addLand(x, y, -1, +0, 5);
-		this.addLand(x, y, +1, +1, 0);
-		this.addLand(x, y, -1, +1, 2);
+		this.addLandEdge(x, y, +1, +1, 0);
+		this.addLandEdge(x, y, -1, +1, 2);
 		this.addLand(x, y, +0, +1, 1);
 
 		this.addLandCorner(x, y, +1, +1, 9);
@@ -53,7 +77,7 @@ LandManager.prototype.createTile = function( x, y ) {
 	}
 
 	if ( this.isTile( x, y, TileTypes.Land ) ) {
-		this.addSprite( x, y, Tiles.Land.pos[4] );
+		this.addLand( x, y, 0, 0, [4,4,4,13].choice() );
 	}
 };
 
