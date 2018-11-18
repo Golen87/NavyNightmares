@@ -199,6 +199,7 @@ Player.prototype.update = function ()
 			Global.game.time.events.add( Phaser.Timer.SECOND * 5 / 16, function() {
 
 				function reviveInput() {
+					this.updateCount();
 					this.allowInput = true;
 					Global.game.input.reset();
 				}
@@ -207,7 +208,6 @@ Player.prototype.update = function ()
 				var dy = (this.direction == 'down') - (this.direction == 'up');
 				Global.World.attackTile( gridX+dx, gridY+dy, reviveInput.bind(this) );
 				Global.World.revealTile( gridX+dx, gridY+dy );
-				this.updateCount();
 
 			}, this );
 		}
@@ -328,6 +328,7 @@ Player.prototype.damageOver = function ()
 Player.prototype.gameOver = function ()
 {
 	this.bubble.kill();
+	this.bubbleText.kill();
 	Global.Audio.play( 'death' );
 
 	Global.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
