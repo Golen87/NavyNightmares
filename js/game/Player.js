@@ -132,19 +132,22 @@ Player.prototype.update = function ()
 		else
 			direction = inputDir.y > 0 ? 'down' : 'up';
 
+		var facingForward = (this.direction == direction);
 		this.setAnimation( 'idle', direction );
 
-		if ( !Global.World.checkLandAt( gridX + inputDir.x, gridY + inputDir.y ) ) {
-			if ( !Global.World.checkEnemyAt( gridX + inputDir.x, gridY + inputDir.y ) ) {
-				this.sprite.goalX += inputDir.x * 16;
-				this.sprite.goalY += inputDir.y * 16;
-				this.updateCount();
+		if ( facingForward ) {
+			if ( !Global.World.checkLandAt( gridX + inputDir.x, gridY + inputDir.y ) ) {
+				if ( !Global.World.checkEnemyAt( gridX + inputDir.x, gridY + inputDir.y ) ) {
+					this.sprite.goalX += inputDir.x * 16;
+					this.sprite.goalY += inputDir.y * 16;
+					this.updateCount();
+				}
+				else
+				{
+					this.damage();
+				}
+				Global.World.revealTile( gridX + inputDir.x, gridY + inputDir.y );
 			}
-			else
-			{
-				this.damage();
-			}
-			Global.World.revealTile( gridX + inputDir.x, gridY + inputDir.y );
 		}
 	}
 
@@ -174,17 +177,33 @@ Player.prototype.update = function ()
 
 	if ( this.allowInput ) {
 		if ( this.keys.space.justDown && !this.harpoon.exists ) {
+
 			this.fireHarpoon();
-			var dx = (this.direction == 'right') - (this.direction == 'left');
-			var dy = (this.direction == 'down') - (this.direction == 'up');
-			Global.World.attackTile( gridX+dx, gridY+dy );
-			Global.World.revealTile( gridX+dx, gridY+dy );
-			this.updateCount();
+			this.harpoon.x = this.sprite.x;
+			this.harpoon.y = this.sprite.y;
+
+			this.allowInput = false;
+			Global.game.time.events.add( Phaser.Timer.SECOND * 2 / 16, function() {
+
+				var dx = (this.direction == 'right') - (this.direction == 'left');
+				var dy = (this.direction == 'down') - (this.direction == 'up');
+				Global.World.revealTile( gridX+dx, gridY+dy );
+
+			}, this );
+
+			Global.game.time.events.add( Phaser.Timer.SECOND * 6 / 16, function() {
+
+				this.allowInput = true;
+
+				var dx = (this.direction == 'right') - (this.direction == 'left');
+				var dy = (this.direction == 'down') - (this.direction == 'up');
+				Global.World.attackTile( gridX+dx, gridY+dy );
+				Global.World.revealTile( gridX+dx, gridY+dy );
+				this.updateCount();
+
+			}, this );
 		}
 	}
-
-	this.harpoon.x = this.sprite.x;
-	this.harpoon.y = this.sprite.y;
 };
 
 
@@ -193,7 +212,7 @@ Player.prototype.fireHarpoon = function ()
 	this.harpoon.reset();
 
 	var name = '{0}_{1}'.format( 'fire', this.direction );
-	this.harpoon.animations.play( name, 8, false, true );
+	this.harpoon.animations.play( name, 16, false, true );
 };
 
 Player.prototype.updateCount = function ()

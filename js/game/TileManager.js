@@ -1,12 +1,13 @@
 
 // Constructor
-function TileManager ()
+function TileManager ( tileset )
 {
 	this.seed = [randFloat( -10000, 10000 ), randFloat( -10000, 10000 )];
 	this.tileMap = {};
 
+	this.tileset = tileset;
 	this.group = Global.game.add.group();
-	this.group.createMultiple( 3*ROOM_WIDTH*ROOM_HEIGHT, 'tileset', 0, false );
+	this.group.createMultiple( 3*ROOM_WIDTH*ROOM_HEIGHT, tileset, 0, false );
 
 	this.activeSet = new Set();
 }
@@ -39,17 +40,15 @@ TileManager.prototype.addSprite = function ( x, y, pos )
 	if ( s )
 	{
 		s.reset( 16*x, 16*y );
-		s.frame = posToIndex( pos );
+		s.frame = posToIndex( this.tileset, pos );
 		s.key = x + "," + y;
+		s.alpha = 1.0;
 	}
 	else
 	{
 		console.warn( "Out of resources!" );
 	}
 	return s;
-};
-
-TileManager.prototype.createTile = function( x, y ) {
 };
 
 

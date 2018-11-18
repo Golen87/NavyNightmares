@@ -10,8 +10,8 @@ World.prototype.create = function ()
 {
 	Global.game.world.setBounds( -Infinity, -Infinity, Infinity, Infinity );
 
-	this.oceanBg = Global.game.add.tileSprite( -16, -16, (ROOM_WIDTH+2) * 16, (ROOM_HEIGHT+2) * 16, 'tileset', posToIndex(Tiles.Water.pos) );
-	//this.gridBg = Global.game.add.tileSprite( 0, 0, ROOM_WIDTH * 16, ROOM_HEIGHT * 16, 'tileset', posToIndex([0,6]) );
+	this.oceanBg = Global.game.add.tileSprite( -16, -16, (ROOM_WIDTH+2) * 16, (ROOM_HEIGHT+2) * 16, 'tileset', posToIndex( 'tileset', Tiles.Water.pos) );
+	//this.gridBg = Global.game.add.tileSprite( 0, 0, ROOM_WIDTH * 16, ROOM_HEIGHT * 16, 'tileset', posToIndex( 'tileset', [0,6] ) );
 	//this.gridBg.alpha = 0.08;
 
 	this.entities = Global.game.add.group();
@@ -154,12 +154,8 @@ World.prototype.checkCloudAt = function ( x, y )
 
 World.prototype.attackTile = function ( x, y )
 {
-	//if (this.cloudManager.checkCloudAt( x, y )) {
-		if (this.enemyManager.checkEnemyAt( x, y )) {
-			this.enemyManager.attack( x, y );
-			this.enemyManager.loadArea( this.camGoal.x, this.camGoal.y );
-		}
-	//}
+	this.enemyManager.attack( x, y );
+	this.enemyManager.loadArea( this.camGoal.x, this.camGoal.y );
 };
 
 World.prototype.revealTile = function ( x, y )

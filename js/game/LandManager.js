@@ -2,7 +2,7 @@
 // Constructor
 function LandManager ()
 {
-	TileManager.call( this );
+	TileManager.call( this, 'tileset' );
 }
 
 

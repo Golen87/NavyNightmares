@@ -5,6 +5,7 @@ const TileTypes = {
 	'Cloud': 4,
 	'Enemy': 5,
 	'Blood': 6,
+	'Miss': 7,
 };
 
 const Tiles = {
@@ -35,24 +36,42 @@ const Tiles = {
 	},
 
 	'Shark': {
-		'pos': [14,0]
+		'pos': [[0,0], [3,0]]
+	},
+	'Serpent': {
+		'pos': [[[0,1], [3,1]], [[1,1], [4,1]], [[2,1], [5,1]]]
+	},
+	'Squid': {
+		'pos': [[[0,2], [3,2]], [[1,2], [4,2]], [[2,2], [5,2]], [[1,3], [4,3]], [[2,3], [5,3]]]
+	},
+	'Tantacle': {
+		'pos': [[0,3], [3,3]]
+	},
+	'Whale': {
+		'pos': [[[0,4], [3,4]], [[0,5], [3,5]]]
 	},
 	'Blood': {
-		'pos': [[15,0], [15,1]]
+		'pos': [[1,0], [4,0]]
+	},
+	'Miss': {
+		'pos': [[1,4], [4,4]]
 	},
 };
 
 
-function posToIndex( pos )
+function posToIndex( tileset, pos )
 {
-	const tilesetWidth = 16;
+	var tilesetWidth = {
+		"tileset": 16,
+		"monsters": 6,
+	}[tileset];
 	return pos[0] + pos[1] * tilesetWidth;
 }
 
-Array.prototype.toIndex = function() {
+Array.prototype.toIndex = function( tileset ) {
 	var res = []
 	for (var i = 0; i < this.length; i++) {
-		res.push(posToIndex( this[i] ));
+		res.push(posToIndex( tileset, this[i] ));
 	}
 	return res;
 };

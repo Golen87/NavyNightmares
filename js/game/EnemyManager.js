@@ -2,7 +2,7 @@
 // Constructor
 function EnemyManager ()
 {
-	TileManager.call( this );
+	TileManager.call( this, 'monsters' );
 }
 
 
@@ -25,16 +25,33 @@ EnemyManager.prototype.generateTile = function ( x, y )
 };
 
 EnemyManager.prototype.addShark = function( x, y, dx, dy, index ) {
-	return this.addSprite( x, y, Tiles.Shark.pos );
+	var s = this.addSprite( x, y, Tiles.Shark.pos );
+
+	var frames = Tiles.Shark.pos.toIndex( this.tileset );
+	s.animations.add( 'idle', frames, 2.5, true );
+	s.animations.play( 'idle' );
+
+	return s;
 };
 
 EnemyManager.prototype.addBlood = function( x, y ) {
 	var s = this.addSprite( x, y, Tiles.Blood.pos );
 
-	var frames = Tiles.Blood.pos.toIndex();
-	console.log(frames);
+	var frames = Tiles.Blood.pos.toIndex( this.tileset );
 	s.animations.add( 'idle', frames, 1, true );
 	s.animations.play( 'idle' );
+	s.alpha = 0.8;
+
+	return s;
+};
+
+EnemyManager.prototype.addMiss = function( x, y ) {
+	var s = this.addSprite( x, y, Tiles.Miss.pos );
+
+	var frames = Tiles.Miss.pos.toIndex( this.tileset );
+	s.animations.add( 'idle', frames, 1, true );
+	s.animations.play( 'idle' );
+	s.alpha = 0.8;
 
 	return s;
 };
@@ -48,6 +65,10 @@ EnemyManager.prototype.createTile = function( x, y ) {
 	if ( this.isTile( x, y, TileTypes.Blood ) ) {
 		var s = this.addBlood( x, y );
 	}
+
+	if ( this.isTile( x, y, TileTypes.Miss ) ) {
+		var s = this.addMiss( x, y );
+	}
 };
 
 
@@ -60,19 +81,30 @@ EnemyManager.prototype.checkEnemyAt = function ( x, y )
 
 EnemyManager.prototype.attack = function ( x, y )
 {
-	var p = [x,y];
-	if ( this.tileMap[p] ) {
-		this.tileMap[p] = TileTypes.Blood;
-	}
-
-	for ( var i = 0; i < this.group.children.length; i++ )
-	{
-		var s = this.group.children[i];
-		if ( s.exists && s.key == [x,y] )
-		{
-			s.kill();
-			this.activeSet.delete(s.key);
+	if (this.checkEnemyAt( x, y )) {
+		var p = [x,y];
+		if ( this.tileMap[p] ) {
+			this.tileMap[p] = TileTypes.Blood;
 		}
+
+		for ( var i = 0; i < this.group.children.length; i++ )
+		{
+			var s = this.group.children[i];
+			if ( s.exists && s.key == [x,y] )
+			{
+				s.kill();
+				this.activeSet.delete(s.key);
+			}
+		}
+	}
+	else {
+		var p = [x,y];
+		if ( this.tileMap[p] ) {
+			this.tileMap[p] = TileTypes.Blood;
+		}
+		this.tileMap[p] = TileTypes.Miss;
+		var key = x + "," + y;
+		this.activeSet.delete(key);
 	}
 };
 

@@ -2,7 +2,7 @@
 // Constructor
 function CloudManager ()
 {
-	TileManager.call( this );
+	TileManager.call( this, 'tileset' );
 }
 
 

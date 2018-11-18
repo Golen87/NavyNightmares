@@ -29,6 +29,7 @@ Global.Preload.prototype = {
 		this.load.image( 'life', 'assets/sprites/lifebuoy.png' );
 
 		this.load.spritesheet( 'tileset', 'assets/sprites/tileset.png', 16, 16 );
+		this.load.spritesheet( 'monsters', 'assets/sprites/monsters.png', 16, 16 );
 		this.load.spritesheet( 'player', 'assets/sprites/player.png', 32, 32 );
 		this.load.spritesheet( 'harpoon', 'assets/sprites/harpoon.png', 64, 64 );
 		this.load.spritesheet( 'smoke', 'assets/sprites/smoke.png', 9, 9 );
