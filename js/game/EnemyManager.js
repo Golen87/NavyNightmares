@@ -28,9 +28,25 @@ EnemyManager.prototype.addShark = function( x, y, dx, dy, index ) {
 	return this.addSprite( x, y, Tiles.Shark.pos );
 };
 
+EnemyManager.prototype.addBlood = function( x, y ) {
+	var s = this.addSprite( x, y, Tiles.Blood.pos );
+
+	var frames = Tiles.Blood.pos.toIndex();
+	console.log(frames);
+	s.animations.add( 'idle', frames, 1, true );
+	s.animations.play( 'idle' );
+
+	return s;
+};
+
 EnemyManager.prototype.createTile = function( x, y ) {
 	if ( this.isTile( x, y, TileTypes.Enemy ) ) {
-		this.addShark( x, y );
+		var s = this.addShark( x, y );
+		s.visible = !Global.World.checkCloudAt( x, y );
+	}
+
+	if ( this.isTile( x, y, TileTypes.Blood ) ) {
+		var s = this.addBlood( x, y );
 	}
 };
 
@@ -45,10 +61,8 @@ EnemyManager.prototype.checkEnemyAt = function ( x, y )
 EnemyManager.prototype.attack = function ( x, y )
 {
 	var p = [x,y];
-	console.log("Attack", p, this.tileMap[p]);
 	if ( this.tileMap[p] ) {
-		console.log("NUKE tilemap");
-		this.tileMap[p] = Tiles.None;
+		this.tileMap[p] = TileTypes.Blood;
 	}
 
 	for ( var i = 0; i < this.group.children.length; i++ )
@@ -56,10 +70,20 @@ EnemyManager.prototype.attack = function ( x, y )
 		var s = this.group.children[i];
 		if ( s.exists && s.key == [x,y] )
 		{
-			console.log("FOUND the fucker");
-			s.tint = 0xff0000;
 			s.kill();
 			this.activeSet.delete(s.key);
+		}
+	}
+};
+
+EnemyManager.prototype.reveal = function ( x, y )
+{
+	for ( var i = 0; i < this.group.children.length; i++ )
+	{
+		var s = this.group.children[i];
+		if ( s.exists && s.key == [x,y] )
+		{
+			s.visible = true;
 		}
 	}
 };

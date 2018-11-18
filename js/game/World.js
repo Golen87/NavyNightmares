@@ -147,13 +147,30 @@ World.prototype.checkEnemyAt = function ( x, y )
 	return this.enemyManager.checkEnemyAt( x, y );
 };
 
+World.prototype.checkCloudAt = function ( x, y )
+{
+	return this.cloudManager.checkCloudAt( x, y );
+};
+
 World.prototype.attackTile = function ( x, y )
 {
 	//if (this.cloudManager.checkCloudAt( x, y )) {
 		if (this.enemyManager.checkEnemyAt( x, y )) {
 			this.enemyManager.attack( x, y );
+			this.enemyManager.loadArea( this.camGoal.x, this.camGoal.y );
 		}
 	//}
+};
+
+World.prototype.revealTile = function ( x, y )
+{
+	if (this.cloudManager.checkCloudAt( x, y )) {
+		this.cloudManager.reveal( x, y );
+		if (this.enemyManager.checkEnemyAt( x, y )) {
+			this.enemyManager.reveal( x, y );
+		}
+		this.cloudManager.loadArea( this.camGoal.x, this.camGoal.y );
+	}
 };
 
 World.prototype.cameraShake = function ( value )

@@ -113,7 +113,7 @@ Player.prototype.update = function ()
 	/* Walking input */
 
 	var inputDir = new Phaser.Point( 0, 0 );
-	if ( true )
+	if ( this.allowInput )
 	{
 		if ( this.keys.up.justDown || this.keys.w.justDown )
 			inputDir.y -= 1;
@@ -144,6 +144,7 @@ Player.prototype.update = function ()
 			{
 				this.damage();
 			}
+			Global.World.revealTile( gridX + inputDir.x, gridY + inputDir.y );
 		}
 	}
 
@@ -171,11 +172,15 @@ Player.prototype.update = function ()
 
 	/* Harpoon */
 
-	if ( this.keys.space.justDown && !this.harpoon.exists ) {
-		this.fireHarpoon();
-		var dx = (this.direction == 'right') - (this.direction == 'left');
-		var dy = (this.direction == 'down') - (this.direction == 'up');
-		Global.World.attackTile( gridX+dx, gridY+dy );
+	if ( this.allowInput ) {
+		if ( this.keys.space.justDown && !this.harpoon.exists ) {
+			this.fireHarpoon();
+			var dx = (this.direction == 'right') - (this.direction == 'left');
+			var dy = (this.direction == 'down') - (this.direction == 'up');
+			Global.World.attackTile( gridX+dx, gridY+dy );
+			Global.World.revealTile( gridX+dx, gridY+dy );
+			this.updateCount();
+		}
 	}
 
 	this.harpoon.x = this.sprite.x;
@@ -253,6 +258,7 @@ Player.prototype.hurt = function ()
 
 Player.prototype.defeat = function ()
 {
+	this.allowInput = false;
 	this.setAnimation( 'hurt', this.direction );
 	this.damageState = 'dead';
 	Global.Audio.play( 'hurt' );
