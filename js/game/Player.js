@@ -322,12 +322,12 @@ Player.prototype.damageOver = function ()
 	this.sprite.tint = 0xffffff;
 
 	this.allowInput = true;
-	this.bubble.kill();
 	Global.game.input.reset();
 };
 
 Player.prototype.gameOver = function ()
 {
+	this.bubble.kill();
 	Global.Audio.play( 'death' );
 
 	Global.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
