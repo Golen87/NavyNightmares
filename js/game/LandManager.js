@@ -14,6 +14,7 @@ LandManager.prototype.generateTile = function ( x, y )
 
 	var value = noise.simplex2(x/8 + this.seed[0], y/8 + this.seed[1]);
 
+	return TileTypes.Land;
 	if (value > 0.6 || value < -0.7) {
 		return TileTypes.Land;
 	}
