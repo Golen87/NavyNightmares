@@ -1,6 +1,9 @@
 function CloudManager ()
 {
 	TileManager.call( this, 'tileset' );
+
+	this.shadowGroup = Global.game.add.group();
+	this.shadowGroup.createMultiple( 3*ROOM_WIDTH*ROOM_HEIGHT, this.tileset, 0, false );
 }
 
 
@@ -21,8 +24,14 @@ CloudManager.prototype.generateTile = function ( x, y )
 	return TileTypes.None;
 };
 
-CloudManager.prototype.addCloud = function( x, y, dx, dy, index ) {
-	return this.addSprite( x, y, Tiles.Cloud.pos );
+CloudManager.prototype.addCloud = function( x, y, index ) {
+	var shadow = this.addSpriteToGroup( this.shadowGroup, x, y, Tiles.Cloud.pos[index] );
+	shadow.tint = 0x444444;
+	shadow.alpha = 0.3;
+	shadow.x += 3;
+	shadow.y += 6;
+
+	return this.addSprite( x, y, Tiles.Cloud.pos[index] );;
 };
 
 CloudManager.prototype.createTile = function( x, y ) {
@@ -54,12 +63,27 @@ CloudManager.prototype.createTile = function( x, y ) {
 				this.addSprite( x, y, Tiles.Cloud.pos[index] );
 			}
 		}*/
-		this.addSprite( x, y, Tiles.Cloud.pos[index] );
+		this.addCloud( x, y, index );
 	}
 };
 
 
 /* World building */
+
+CloudManager.prototype.clearOutOfView = function ()
+{
+	TileManager.prototype.clearOutOfView.call( this );
+
+	for ( var i = 0; i < this.shadowGroup.children.length; i++ )
+	{
+		var s = this.shadowGroup.children[i];
+		if ( s.exists && !this.isInView( s.position.x, s.position.y ) )
+		{
+			s.kill();
+			this.activeSet.delete(s.key);
+		}
+	}
+};
 
 CloudManager.prototype.checkCloudAt = function ( x, y )
 {
@@ -68,6 +92,8 @@ CloudManager.prototype.checkCloudAt = function ( x, y )
 
 CloudManager.prototype.reveal = function ( x, y )
 {
+	Global.Particle.createCloudBurst( 16*x+8, 16*y+8 );
+
 	var p = [x,y];
 	if ( this.tileMap[p] ) {
 		this.tileMap[p] = TileTypes.None;
@@ -83,6 +109,16 @@ CloudManager.prototype.reveal = function ( x, y )
 	for ( var i = 0; i < this.group.children.length; i++ )
 	{
 		var s = this.group.children[i];
+		if ( s.exists && neigh.contains(s.key) )
+		{
+			s.kill();
+			this.activeSet.delete(s.key);
+		}
+	}
+
+	for ( var i = 0; i < this.shadowGroup.children.length; i++ )
+	{
+		var s = this.shadowGroup.children[i];
 		if ( s.exists && neigh.contains(s.key) )
 		{
 			s.kill();

@@ -31,6 +31,7 @@ Player.prototype.create = function ( x, y, playerGroup, bubbleGroup )
 	this.bubbleText = Global.game.add.bitmapText( 0, 0, 'TinyUnicode', "9", 16, bubbleGroup );
 	this.bubbleText.anchor.x = Math.round(this.bubbleText.textWidth / 2) / this.bubbleText.textWidth;
 	this.bubbleText.anchor.y = Math.round(this.bubbleText.textHeight / 2) / this.bubbleText.textHeight;
+	this.bubbleText.tint = 0xFF0000;
 
 
 	/* Harpoon */
@@ -39,7 +40,7 @@ Player.prototype.create = function ( x, y, playerGroup, bubbleGroup )
 	this.harpoon.anchor.set( 0.5 );
 	this.harpoon.kill();
 
-	this.setupinitInput();
+	this.setupInput();
 	this.setupAnimation();
 };
 
@@ -94,7 +95,7 @@ Player.prototype.setAnimation = function ( newState, newDirection )
 	}
 };
 
-Player.prototype.setupinitInput = function ()
+Player.prototype.setupInput = function ()
 {
 	this.keys = Global.game.input.keyboard.createCursorKeys();
 	this.keys.w = Global.game.input.keyboard.addKey( Phaser.Keyboard.W );
@@ -104,12 +105,7 @@ Player.prototype.setupinitInput = function ()
 	this.keys.space = Global.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 
 	this.input = { "up": {}, "left": {}, "down": {}, "right": {}, "space": {} };
-	for (var key in this.input) {
-		this.input[key].wasDown = false;
-		this.input[key].isDown = false;
-		this.input[key].justDown = false;
-		this.input[key].holdTimer = 0;
-	}
+	this.resetInput();
 };
 
 Player.prototype.handleInput = function ()
@@ -133,8 +129,8 @@ Player.prototype.handleInput = function ()
 Player.prototype.resetInput = function ()
 {
 	for (var key in this.input) {
-		this.input[key].wasDown = false;
-		this.input[key].isDown = false;
+		this.input[key].wasDown = true;
+		this.input[key].isDown = true;
 		this.input[key].justDown = false;
 		this.input[key].holdTimer = 0;
 	}
@@ -179,8 +175,8 @@ Player.prototype.update = function ()
 	var obstacle = ( Global.World.checkCloudAt( gridX + dx, gridY + dy ) ||
 					 Global.World.checkEnemyAt( gridX + dx, gridY + dy ) );
 
-	if ( this.allowInput && this.input[this.direction].holdTimer == 6+6*obstacle ) {
-		this.input[this.direction].holdTimer -= 28;
+	if ( this.allowInput && this.input[this.direction].holdTimer == 3+6*obstacle ) {
+		this.input[this.direction].holdTimer -= 24;
 
 		if ( !Global.World.checkLandAt( gridX + dx, gridY + dy ) ) {
 			if ( !Global.World.checkEnemyAt( gridX + dx, gridY + dy ) ) {
@@ -212,8 +208,6 @@ Player.prototype.update = function ()
 
 	this.bubbleText.x = this.sprite.x + 11;
 	this.bubbleText.y = this.sprite.y - 13;
-
-	this.bubbleText.tint = 0xFF0000;
 
 
 	/* Harpoon */

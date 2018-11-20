@@ -18,15 +18,15 @@ Global.MainMenu.prototype = {
 
 		x = SCREEN_WIDTH / 2;
 		y = 11;
-		var text = this.add.bitmapText( x+1, y, 'Pixelade', 'Navy Nightmare', 26 );
-		text.tint = 0x000077;
-		text.anchor.x = 0.5;
+		this.titleBg = this.add.bitmapText( x+1, y, 'Pixelade', 'Navy Nightmare', 26 );
+		this.titleBg.tint = 0x000077;
+		this.titleBg.anchor.x = 0.5;
 
 		x = SCREEN_WIDTH / 2;
 		y = 10;
-		var text = this.add.bitmapText( x, y, 'Pixelade', 'Navy Nightmare', 26 );
-		text.tint = 0xffffff;
-		text.anchor.x = 0.5;
+		this.titleFg = this.add.bitmapText( x, y, 'Pixelade', 'Navy Nightmare', 26 );
+		this.titleFg.tint = 0xffffff;
+		this.titleFg.anchor.x = 0.5;
 
 		/* Selection menu */
 		y += 38;

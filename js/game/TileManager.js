@@ -32,9 +32,9 @@ TileManager.prototype.isTile = function ( x, y, tile )
 	return this.getTile(x, y) == tile;
 };
 
-TileManager.prototype.addSprite = function ( x, y, pos )
+TileManager.prototype.addSpriteToGroup = function ( group, x, y, pos )
 {
-	var s = this.group.getFirstDead();
+	var s = group.getFirstDead();
 	if ( s )
 	{
 		s.reset( 16*x, 16*y );
@@ -48,6 +48,11 @@ TileManager.prototype.addSprite = function ( x, y, pos )
 		console.warn( "Out of resources!" );
 	}
 	return s;
+};
+
+TileManager.prototype.addSprite = function ( x, y, pos )
+{
+	return this.addSpriteToGroup( this.group, x, y, pos );
 };
 
 

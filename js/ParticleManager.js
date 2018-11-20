@@ -16,7 +16,7 @@ ParticleManager.prototype.WhiteSmokeParticle = (function ()
 	WhiteSmokeParticle.prototype.onEmit = function ()
 	{
 		this.animations.stop( 'evaporate', true );
-		this.animations.play( 'evaporate', 3+8*Math.random(), false );
+		this.animations.play( 'evaporate', 3+16*Math.random(), false );
 		if ( Math.random() < 0.5 ) this.scale.x *= -1;
 		if ( Math.random() < 0.5 ) this.scale.y *= -1;
 		//this.animations.getAnimation( 'evaporate' ).frame = Math.floor( Math.random() * this.animations.getAnimation( 'evaporate' ).frameTotal );
@@ -49,6 +49,36 @@ ParticleManager.prototype.createSmokeBurst = function ( x, y )
 	this.smokeBurst.y = y;
 	// start(explode, lifespan, frequency, quantity, forceQuantity)
 	this.smokeBurst.start( true, 0, 4000, 16 );
+};
+
+
+/* Cloud burst */
+
+ParticleManager.prototype.initCloudBurst = function ()
+{
+	this.cloudBurst = Global.game.add.emitter( 0,0, 256 );
+	this.cloudBurst.particleClass = this.WhiteSmokeParticle;
+	this.cloudBurst.width = 17;
+	this.cloudBurst.height = 17;
+	this.cloudBurst.setXSpeed( -8, 8 );
+	this.cloudBurst.setYSpeed( -8, 8 );
+	this.cloudBurst.gravity = -16;
+	this.cloudBurst.setRotation(0, 0);
+	this.cloudBurst.setAlpha( 0.4, 0.0, 2000 )
+	//this.cloudBurst.forEach(function(particle) {particle.tint = 0xff0000;});
+	//makeParticles(keys, frames, quantity, collide, collideWorldBounds)
+	this.cloudBurst.makeParticles();
+};
+
+ParticleManager.prototype.createCloudBurst = function ( x, y )
+{
+	if ( this.cloudBurst == null || this.cloudBurst.game == null )
+		this.initCloudBurst();
+
+	this.cloudBurst.x = x;
+	this.cloudBurst.y = y;
+	// start(explode, lifespan, frequency, quantity, forceQuantity)
+	this.cloudBurst.start( true, 0, 4000, 12 );
 };
 
 
