@@ -1,15 +1,6 @@
-
-// Constructor
 function AudioManager()
 {
 	this.sounds = {};
-
-	this.init();
-};
-
-AudioManager.prototype.init = function ()
-{
-	//addMarker(name, start, duration, volume, loop)
 
 	var masterVol = 0.8;
 

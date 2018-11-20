@@ -1,6 +1,6 @@
+function Player () {}
 
-// Constructor
-function Player ()
+Player.prototype.create = function ( x, y, playerGroup, bubbleGroup )
 {
 	this.health = 3;
 	this.speed = 10;
@@ -10,11 +10,8 @@ function Player ()
 	this.harpoonCount = 10;
 
 	this.allowInput = true;
-}
 
-Player.prototype.create = function ( x, y, group )
-{
-	this.sprite = group.create( x, y, 'player', 0 );
+	this.sprite = playerGroup.create( x, y, 'player', 0 );
 	this.sprite.anchor.set( 0.5 );
 	//this.sprite.body.setSize( 10, 8, 3, 6 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
@@ -28,35 +25,26 @@ Player.prototype.create = function ( x, y, group )
 
 	/* Bubble */
 
-	this.bubble = Global.Gui.group.create( x, y, 'bubble' );
+	this.bubble = bubbleGroup.create( x, y, 'bubble' );
 	this.bubble.anchor.set( 0.5 );
+
+	this.bubbleText = Global.game.add.bitmapText( 0, 0, 'TinyUnicode', "9", 16, bubbleGroup );
+	this.bubbleText.anchor.x = Math.round(this.bubbleText.textWidth / 2) / this.bubbleText.textWidth;
+	this.bubbleText.anchor.y = Math.round(this.bubbleText.textHeight / 2) / this.bubbleText.textHeight;
 
 
 	/* Harpoon */
 
-	this.harpoon = Global.Gui.group.create( x, y, 'harpoon' );
+	this.harpoon = bubbleGroup.create( x, y, 'harpoon' );
 	this.harpoon.anchor.set( 0.5 );
 	this.harpoon.kill();
 
-
-	/* Input */
-
-	this.keys = Global.game.input.keyboard.createCursorKeys();
-	this.keys.w = Global.game.input.keyboard.addKey( Phaser.Keyboard.W );
-	this.keys.a = Global.game.input.keyboard.addKey( Phaser.Keyboard.A );
-	this.keys.s = Global.game.input.keyboard.addKey( Phaser.Keyboard.S );
-	this.keys.d = Global.game.input.keyboard.addKey( Phaser.Keyboard.D );
-	this.keys.space = Global.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
-
-
+	this.setupinitInput();
 	this.setupAnimation();
 };
 
 Player.prototype.createBubble = function() {
-	this.bubbleText = Global.game.add.bitmapText( 0, 0, 'TinyUnicode', "9", 16 );
-	this.bubbleText.anchor.x = Math.round(this.bubbleText.textWidth / 2) / this.bubbleText.textWidth;
-	this.bubbleText.anchor.y = Math.round(this.bubbleText.textHeight / 2) / this.bubbleText.textHeight;
-	this.updateCount();
+	
 };
 
 Player.prototype.setupAnimation = function ()
@@ -106,78 +94,124 @@ Player.prototype.setAnimation = function ( newState, newDirection )
 	}
 };
 
+Player.prototype.setupinitInput = function ()
+{
+	this.keys = Global.game.input.keyboard.createCursorKeys();
+	this.keys.w = Global.game.input.keyboard.addKey( Phaser.Keyboard.W );
+	this.keys.a = Global.game.input.keyboard.addKey( Phaser.Keyboard.A );
+	this.keys.s = Global.game.input.keyboard.addKey( Phaser.Keyboard.S );
+	this.keys.d = Global.game.input.keyboard.addKey( Phaser.Keyboard.D );
+	this.keys.space = Global.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
+
+	this.input = { "up": {}, "left": {}, "down": {}, "right": {}, "space": {} };
+	for (var key in this.input) {
+		this.input[key].wasDown = false;
+		this.input[key].isDown = false;
+		this.input[key].justDown = false;
+		this.input[key].holdTimer = 0;
+	}
+};
+
+Player.prototype.handleInput = function ()
+{
+	for (var key in this.input) {
+		this.input[key].wasDown = this.input[key].isDown;
+	}
+
+	this.input.up.isDown = this.keys.up.isDown || this.keys.w.isDown;
+	this.input.left.isDown = this.keys.left.isDown || this.keys.a.isDown;
+	this.input.down.isDown = this.keys.down.isDown || this.keys.s.isDown;
+	this.input.right.isDown = this.keys.right.isDown || this.keys.d.isDown;
+	this.input.space.isDown = this.keys.space.isDown;
+
+	for (var key in this.input) {
+		this.input[key].justDown = ( this.input[key].isDown && !this.input[key].wasDown );
+		this.input[key].holdTimer = this.input[key].isDown ? this.input[key].holdTimer + 1 : 0;
+	}
+};
+
+Player.prototype.resetInput = function ()
+{
+	for (var key in this.input) {
+		this.input[key].wasDown = false;
+		this.input[key].isDown = false;
+		this.input[key].justDown = false;
+		this.input[key].holdTimer = 0;
+	}
+
+	Global.game.input.reset();
+};
+
 Player.prototype.update = function ()
 {
 	var gridX = Math.round( ( this.sprite.goalX ) / 16 );
 	var gridY = Math.round( ( this.sprite.goalY ) / 16 );
-
+	var dx = (this.direction == 'right') - (this.direction == 'left');
+	var dy = (this.direction == 'down') - (this.direction == 'up');
 
 	/* Walking input */
 
+	this.handleInput();
+
 	var inputDir = new Phaser.Point( 0, 0 );
-	console.log(this.allowInput ? "Allowing input" : "Blocking input!!!");
 	if ( this.allowInput )
 	{
-		if ( this.keys.up.justDown || this.keys.w.justDown )
+		if ( this.input.up.justDown )
 			inputDir.y -= 1;
-		else if ( this.keys.down.justDown || this.keys.s.justDown )
+		else if ( this.input.down.justDown )
 			inputDir.y += 1;
-		else if ( this.keys.left.justDown || this.keys.a.justDown )
+		else if ( this.input.left.justDown )
 			inputDir.x -= 1;
-		else if ( this.keys.right.justDown || this.keys.d.justDown )
+		else if ( this.input.right.justDown )
 			inputDir.x += 1;
 	}
 
 	var direction = this.direction;
 	if ( inputDir.getMagnitude() > 0 ) {
-		console.log("Got input", inputDir.x, inputDir.y);
 		if ( Math.abs( inputDir.x ) >= Math.abs( inputDir.y ) )
 			direction = inputDir.x > 0 ? 'right' : 'left';
 		else
 			direction = inputDir.y > 0 ? 'down' : 'up';
 
-		var facingForward = (this.direction == direction);
 		this.setAnimation( 'idle', direction );
+	}
 
-		if ( facingForward ) {
-			if ( !Global.World.checkLandAt( gridX + inputDir.x, gridY + inputDir.y ) ) {
-				if ( !Global.World.checkEnemyAt( gridX + inputDir.x, gridY + inputDir.y ) ) {
-					this.sprite.goalX += inputDir.x * 16;
-					this.sprite.goalY += inputDir.y * 16;
-					Global.Audio.play( 'boxPush' );
-					this.updateCount();
-					console.log("Moving!");
-				}
-				else
-				{
-					this.damage();
-				}
-				Global.World.revealTile( gridX + inputDir.x, gridY + inputDir.y );
+	var obstacle = ( Global.World.checkCloudAt( gridX + dx, gridY + dy ) ||
+					 Global.World.checkEnemyAt( gridX + dx, gridY + dy ) );
+
+	if ( this.allowInput && this.input[this.direction].holdTimer == 10+6*obstacle ) {
+		this.input[this.direction].holdTimer -= 30;
+
+		if ( !Global.World.checkLandAt( gridX + dx, gridY + dy ) ) {
+			if ( !Global.World.checkEnemyAt( gridX + dx, gridY + dy ) ) {
+				this.sprite.goalX += dx * 16;
+				this.sprite.goalY += dy * 16;
+				Global.Audio.play( 'boxPush' );
+				this.updateCount();
 			}
-		}
-		else {
-			console.log("Turning!");
+			else
+			{
+				this.damage();
+			}
+			Global.World.revealTile( gridX + dx, gridY + dy );
 		}
 	}
+
 
 	var fac = 1 - Math.pow( 0.8, Global.game.time.elapsed * 0.06 );
 	this.sprite.x += ( this.sprite.goalX + 8 - this.sprite.x ) * fac;
 	this.sprite.y += ( this.sprite.goalY + 8 - this.sprite.y ) * fac;
 
-
-	/* Bobbing */
-
-	var bob = 0; //Math.sin( Global.game.time.totalElapsedSeconds() * Math.PI ) > 0;
-	//this.sprite.anchor.y = 0.29 + bob/32;
+	this.sprite.anchor.y = 0.5 - this.input[this.direction].isDown / 32;
 
 
 	/* Bubble */
 
 	this.bubble.x = this.sprite.x + 9;
-	this.bubble.y = this.sprite.y - 12 - bob;
+	this.bubble.y = this.sprite.y - 12;
 
 	this.bubbleText.x = this.sprite.x + 11;
-	this.bubbleText.y = this.sprite.y - 13 - bob;
+	this.bubbleText.y = this.sprite.y - 13;
 
 	this.bubbleText.tint = 0xFF0000;
 
@@ -185,7 +219,7 @@ Player.prototype.update = function ()
 	/* Harpoon */
 
 	if ( this.allowInput ) {
-		if ( this.keys.space.justDown && !this.harpoon.exists ) {
+		if ( this.input.space.justDown && !this.harpoon.exists && this.harpoonCount > 0 ) {
 
 			this.fireHarpoon();
 			this.harpoon.x = this.sprite.x;
@@ -194,7 +228,7 @@ Player.prototype.update = function ()
 			Global.Audio.play( 'swing' );
 
 			this.allowInput = false;
-			Global.game.time.events.add( Phaser.Timer.SECOND * 2 / 16, function() {
+			Global.game.time.events.add( Phaser.Timer.SECOND * 1 / 16, function() {
 
 				var dx = (this.direction == 'right') - (this.direction == 'left');
 				var dy = (this.direction == 'down') - (this.direction == 'up');
@@ -204,10 +238,15 @@ Player.prototype.update = function ()
 
 			Global.game.time.events.add( Phaser.Timer.SECOND * 5 / 16, function() {
 
-				function reviveInput() {
+				function reviveInput( success ) {
+					if ( !success )
+						this.updateAmmoCount( -1 );
+
 					this.updateCount();
-					this.allowInput = true;
-					Global.game.input.reset();
+					this.resetInput();
+
+					if ( this.damageState != 'dead' )
+						this.allowInput = true;
 				}
 
 				var dx = (this.direction == 'right') - (this.direction == 'left');
@@ -227,6 +266,23 @@ Player.prototype.fireHarpoon = function ()
 
 	var name = '{0}_{1}'.format( 'fire', this.direction );
 	this.harpoon.animations.play( name, 16, false, true );
+};
+
+Player.prototype.updateAmmoCount = function ( rel )
+{
+	if (rel) {
+		this.harpoonCount += rel;
+		if ( this.harpoonCount <= 0 ) {
+			this.defeat();
+
+			// Move please
+			Global.Audio.play( 'chop' );
+			Global.World.cameraShake( 15 );
+		}
+	}
+
+	Global.Gui.ammoCount.setText( this.harpoonCount );
+	Global.Gui.ammoCount.tint = ( this.harpoonCount > 1 ) ? 0xFFFFFF : 0xFF0000;
 };
 
 Player.prototype.updateCount = function ()
@@ -281,7 +337,7 @@ Player.prototype.hurt = function ()
 	this.damageState = 'hurt';
 	this.setAnimation( 'hurt', this.direction );
 
-	Global.game.time.events.add( Phaser.Timer.SECOND * 0.3, this.damageOver, this );
+	Global.game.time.events.add( Phaser.Timer.SECOND * 0.5, this.damageOver, this );
 
 	if ( !this.damageStepActive )
 	{
@@ -292,6 +348,8 @@ Player.prototype.hurt = function ()
 
 Player.prototype.defeat = function ()
 {
+	this.allowInput = false;
+
 	this.setAnimation( 'hurt', this.direction );
 	this.damageState = 'dead';
 	Global.World.cameraShake( 16 );
@@ -328,7 +386,7 @@ Player.prototype.damageOver = function ()
 	this.sprite.tint = 0xffffff;
 
 	this.allowInput = true;
-	Global.game.input.reset();
+	this.resetInput();
 };
 
 Player.prototype.gameOver = function ()

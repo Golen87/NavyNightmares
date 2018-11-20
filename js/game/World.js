@@ -1,10 +1,4 @@
-
-// Constructor
-function World ()
-{
-	this.Player = new Player();
-}
-
+function World () {}
 
 World.prototype.create = function ()
 {
@@ -12,15 +6,20 @@ World.prototype.create = function ()
 	//Global.game.world.setBounds( -10, -10, 10, 10 );
 
 	this.oceanBg = Global.game.add.tileSprite( -16, -16, (ROOM_WIDTH+2) * 16, (ROOM_HEIGHT+2) * 16, 'tileset', posToIndex( 'tileset', Tiles.Water.pos) );
-	//this.gridBg = Global.game.add.tileSprite( 0, 0, ROOM_WIDTH * 16, ROOM_HEIGHT * 16, 'tileset', posToIndex( 'tileset', [0,6] ) );
-	//this.gridBg.alpha = 0.08;
 
-	this.entities = Global.game.add.group();
+	this.helpGrid = Global.game.add.tileSprite( 0, 0, ROOM_WIDTH * 16 + 32, ROOM_HEIGHT * 16 + 32, 'tileset', posToIndex( 'tileset', [0,6] ) );
+	//this.helpGrid = Global.game.add.tileSprite( 0, 0, 49, 49, 'tileset', posToIndex( 'tileset', [0,6] ) );
+	this.helpGrid.alpha = 0.08;
 
+	this.playerGroup = Global.game.add.group();
+	this.bubbleGroup = Global.game.add.group();
+
+	this.Player = new Player();
 	this.Player.create(
 		0,
 		0,
-		this.entities
+		this.playerGroup,
+		this.bubbleGroup
 	);
 
 	this.landManager = new LandManager();
@@ -39,13 +38,6 @@ World.prototype.create = function ()
 	Global.game.camera.x = this.camGoal.x;
 	Global.game.camera.y = this.camGoal.y;
 
-	Global.game.world.bringToTop( this.landManager.group );
-	Global.game.world.bringToTop( this.enemyManager.group );
-	Global.game.world.bringToTop( this.entities );
-	Global.game.world.bringToTop( Global.Light.lightGroup );
-	Global.game.world.bringToTop( this.cloudManager.group );
-	Global.game.world.bringToTop( Global.Gui.group );
-
 	Global.game.camera.y = Math.round( this.camPos.y );
 	this.shake = 0;
 	this.prevShakeDir = [0,0];
@@ -56,14 +48,14 @@ World.prototype.create = function ()
 	this.enemyManager.loadArea( this.camGoal.x, this.camGoal.y );
 	this.cloudManager.loadArea( this.camGoal.x, this.camGoal.y );
 
-	this.Player.createBubble();
+	this.Player.updateCount();
 };
 
 World.prototype.update = function ()
 {
 	this.Player.update();
 
-	this.entities.sort( 'y', Phaser.Group.SORT_ASCENDING );
+	this.playerGroup.sort( 'y', Phaser.Group.SORT_ASCENDING );
 
 
 	/* Camera */
@@ -100,6 +92,9 @@ World.prototype.update = function ()
 	this.oceanBg.x = 16 * Math.round(this.camPos.x / 16) - 16;
 	this.oceanBg.y = 16 * Math.round(this.camPos.y / 16) - 16;
 	this.oceanBg.x += 1.1 * Math.sin( 0.7 * Global.game.time.totalElapsedSeconds() * Math.PI );
+
+	this.helpGrid.x = this.Player.sprite.goalX - SCREEN_WIDTH/2;
+	this.helpGrid.y = this.Player.sprite.goalY - SCREEN_HEIGHT/2;
 
 
 	if ( this.shake > 0 )
@@ -155,9 +150,9 @@ World.prototype.checkCloudAt = function ( x, y )
 
 World.prototype.attackTile = function ( x, y, reviveInput )
 {
-	function callback() {
+	function callback( success ) {
 		this.enemyManager.loadArea( this.camGoal.x, this.camGoal.y );
-		reviveInput();
+		reviveInput( success );
 	}
 
 	this.enemyManager.attack( x, y, callback.bind(this) );

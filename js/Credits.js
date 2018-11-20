@@ -1,5 +1,4 @@
 var Global = Global || {};
-
 Global.Credits = function() {};
 
 Global.Credits.prototype = {
@@ -13,7 +12,7 @@ Global.Credits.prototype = {
 		this.background.animations.add( 'idle', [0,1], 2.5, true );
 		this.background.animations.play( 'idle' );
 
-		Global.game.camera.flash( 0xffffff, 500 );
+		Global.game.camera.flash( 0xffffff, 400 );
 
 		var y = 15;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'TinyUnicode', '- Made by -', 16 );
@@ -58,6 +57,10 @@ Global.Credits.prototype = {
 
 	toMainMenu: function() {
 		Global.Audio.play( 'menu', 'click' );
-		this.state.start( 'MainMenu' );
+
+		this.camera.fade(0xFFFFFF, 200);
+		this.time.events.add( 210, function() {
+			this.state.start( 'MainMenu' );
+		}, this);
 	},
 };

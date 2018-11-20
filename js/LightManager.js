@@ -1,8 +1,4 @@
-
-// Constructor
-function LightManager()
-{
-};
+function LightManager() {};
 
 LightManager.prototype.create = function ()
 {

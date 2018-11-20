@@ -1,6 +1,4 @@
 var Global = Global || {};
-
-//loading the game assets
 Global.Preload = function() {};
 
 Global.Preload.prototype = {
@@ -27,6 +25,8 @@ Global.Preload.prototype = {
 		this.load.image( 'corner', 'assets/sprites/corner.png' );
 		this.load.image( 'bubble', 'assets/sprites/bubble.png' );
 		this.load.image( 'life', 'assets/sprites/lifebuoy.png' );
+		this.load.image( 'harpoon-icon', 'assets/sprites/harpoon-icon.png' );
+		this.load.image( 'small-hud', 'assets/sprites/small-hud.png' );
 
 		this.load.spritesheet( 'tileset', 'assets/sprites/tileset.png', 16, 16 );
 		this.load.spritesheet( 'monsters', 'assets/sprites/monsters.png', 16, 16 );
@@ -85,7 +85,10 @@ Global.Preload.prototype = {
 	create: function () {
 		this.setup();
 
-		this.state.start( 'MainMenu' );
+		this.camera.fade(0xFFFFFF, 200);
+		this.time.events.add( 210, function() {
+			this.state.start( 'MainMenu' );
+		}, this);
 	},
 	fileComplete: function ( progress, cacheKey, success, totalLoaded, totalFiles ) {}
 };

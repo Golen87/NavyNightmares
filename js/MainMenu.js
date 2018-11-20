@@ -1,5 +1,4 @@
 var Global = Global || {};
-
 Global.MainMenu = function() {};
 
 Global.MainMenu.prototype = {
@@ -13,7 +12,7 @@ Global.MainMenu.prototype = {
 		this.background.animations.add( 'idle', [0,1], 2.5, true );
 		this.background.animations.play( 'idle' );
 
-		Global.game.camera.flash( 0xffffff, 500 );
+		Global.game.camera.flash( 0xffffff, 400 );
 
 
 
@@ -35,10 +34,7 @@ Global.MainMenu.prototype = {
 		this.setupMenus();
 		this.menuManager.createMenu( SCREEN_WIDTH/2, y, this.startMenu );
 
-		this.menuManager.allowInput = false;
-		Global.game.time.events.add( 550, function() {
-			this.menuManager.allowInput = true;
-		}, this );
+		this.menuManager.allowInput = true;
 	},
 	update: function() {
 		this.menuManager.update();
@@ -55,7 +51,7 @@ Global.MainMenu.prototype.setupMenus = function ()
 {
 	var play = function() { this.startGame(); };
 	var options = function() { this.menuManager.nextMenu( this.optionsMenu ); };
-	var credits = function() { this.state.start( 'Credits' ); };
+	var credits = function() { this.startCredits(); };
 
 	this.startMenu = [
 		[ 'play', play.bind(this) ],
@@ -93,8 +89,21 @@ Global.MainMenu.prototype.startGame = function ()
 		this.menuManager.allowInput = false;
 
 		this.camera.fade(0xFFFFFF, 200);
-		this.time.events.add( 300, function() {
+		this.time.events.add( 210, function() {
 			this.state.start( 'Game' );
+		}, this);
+	}
+};
+
+Global.MainMenu.prototype.startCredits = function ()
+{
+	if ( this.menuManager.allowInput )
+	{
+		this.menuManager.allowInput = false;
+
+		this.camera.fade(0xFFFFFF, 200);
+		this.time.events.add( 210, function() {
+			this.state.start( 'Credits' );
 		}, this);
 	}
 };

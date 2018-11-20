@@ -1,24 +1,22 @@
-
 var Global = Global || {};
-
-Global.Game = function()
-{
-	this.World = new World();
-	Global.World = this.World;
-};
+Global.Game = function() {};
 
 Global.Game.prototype =
 {
 	create: function()
 	{
 		Global.game.stage.backgroundColor = '#FF0000';
+		Global.game.camera.flash( 0xffffff, 400 );
 
 		Global.paused = false;
 		Global.game.physics.arcade.isPaused = false;
 
+		this.World = new World();
+		Global.World = this.World;
+		this.World.create();
+
 		Global.Light.create();
 		Global.Gui.create();
-		this.World.create();
 
 		var key = Global.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
 		key.onDown.add( this.togglePause, this );
@@ -29,6 +27,16 @@ Global.Game.prototype =
 		this.holdPosition = new Phaser.Point( 0, 0 );
 
 		Global.togglePause = Global.Game.prototype.togglePause.bind( this );
+
+
+		Global.game.world.bringToTop( Global.World.landManager.group );
+		Global.game.world.bringToTop( Global.World.enemyManager.group );
+		Global.game.world.bringToTop( Global.World.playerGroup );
+		Global.game.world.bringToTop( Global.Light.lightGroup );
+		Global.game.world.bringToTop( Global.World.helpGrid );
+		Global.game.world.bringToTop( Global.World.cloudManager.group );
+		Global.game.world.bringToTop( Global.World.bubbleGroup );
+		Global.game.world.bringToTop( Global.Gui.group );
 	},
 
 	update: function()

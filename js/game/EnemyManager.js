@@ -1,5 +1,3 @@
-
-// Constructor
 function EnemyManager ()
 {
 	TileManager.call( this, 'monsters' );
@@ -27,12 +25,11 @@ EnemyManager.prototype.generateTile = function ( x, y )
 EnemyManager.prototype.addEnemy = function( x, y, enemy, sound ) {
 	var pos = enemy.pos.choice();
 	var s = this.addSprite( x, y, 0 );
+	s.sound = sound;
 
 	var frames = pos.toIndex( this.tileset );
 	s.animations.add( 'idle', frames, 2.5, true );
 	s.animations.play( 'idle' );
-	s.blood = false;
-	s.sound = sound;
 
 	return s;
 };
@@ -44,7 +41,6 @@ EnemyManager.prototype.addBlood = function( x, y ) {
 	s.animations.add( 'idle', frames, 1, true );
 	s.animations.play( 'idle' );
 	s.alpha = 0.8;
-	s.blood = true;
 
 	return s;
 };
@@ -99,6 +95,8 @@ EnemyManager.prototype.checkEnemyAt = function ( x, y )
 
 EnemyManager.prototype.attack = function ( x, y, callback )
 {
+	Global.Audio.play( 'footsteps' );
+
 	if (this.checkEnemyAt( x, y )) {
 		
 		for ( var i = 0; i < this.group.children.length; i++ )
@@ -107,25 +105,25 @@ EnemyManager.prototype.attack = function ( x, y, callback )
 			if ( s.exists && s.key == [x,y] )
 			{
 
-				function blink() {
-					if ( !this.blood )
+				function blink( sprite, count=0 ) {
+					if ( count < 6 )
 					{
-						this.alpha = 1.5 - this.alpha;
-						this.tint = this.alpha == 1.0 ? 0xff7777 : 0xffffff;
+						sprite.alpha = 1.5 - sprite.alpha;
+						sprite.tint = sprite.alpha == 1.0 ? 0xff7777 : 0xffffff;
 
-						Global.game.time.events.add( Phaser.Timer.SECOND * 0.05, blink, this );
+						Global.game.time.events.add( Phaser.Timer.SECOND * 0.05, function() {
+							blink.call( this, sprite, count+1 );
+						}, this );
+					}
+					else {
+						this.kill( x, y );
+						callback( true );
 					}
 				};
-				blink.call( s );
+				blink.call( this, s );
 
 			}
 		}
-
-		Global.game.time.events.add( Phaser.Timer.SECOND * 0.5, function() {
-			s.blood = true;
-			this.kill( x, y );
-			callback();
-		}, this );
 	}
 	else {
 		var p = [x,y];
@@ -134,7 +132,7 @@ EnemyManager.prototype.attack = function ( x, y, callback )
 			var key = x + "," + y;
 			this.activeSet.delete(key);
 		}
-		callback();
+		callback( false );
 	}
 };
 

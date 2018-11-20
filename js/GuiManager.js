@@ -1,8 +1,4 @@
-
-// Constructor
-function GuiManager()
-{
-};
+function GuiManager() {};
 
 GuiManager.prototype.create = function ()
 {
@@ -28,6 +24,19 @@ GuiManager.prototype.create = function ()
 		this.lifePoint[i] = this.group.create( 0, 0, 'life' );
 		this.lifePoint[i].anchor.setTo( 1.0, 1.0 );
 	}
+
+
+	/* Ammo GUI */
+
+	this.ammoGui = this.group.create( 0, 0, 'small-hud' );
+	this.ammoGui.anchor.setTo( 0.0, 1.0 );
+
+	this.ammoIcon = this.group.create( 0, 0, 'harpoon-icon' );
+	this.ammoIcon.anchor.setTo( 0.0, 1.0 );
+
+	this.ammoCount = Global.game.add.bitmapText( 0, 0, 'Pixelade', '10', 2*13, this.group );
+	this.ammoCount.anchor.setTo( 0.5, 0.5 );
+	Global.World.Player.updateAmmoCount();
 };
 
 GuiManager.prototype.update = function ()
@@ -42,6 +51,15 @@ GuiManager.prototype.update = function ()
 		this.lifePoint[i].x = Global.game.camera.view.x + SCREEN_WIDTH - 4 - 22 * ( i );
 		this.lifePoint[i].y = Global.game.camera.view.y + SCREEN_HEIGHT - 2;
 	}
+
+	this.ammoGui.x = Global.game.camera.view.x;
+	this.ammoGui.y = Global.game.camera.view.y + SCREEN_HEIGHT;
+
+	this.ammoIcon.x = Global.game.camera.view.x + 4;
+	this.ammoIcon.y = Global.game.camera.view.y + SCREEN_HEIGHT - 3;
+
+	this.ammoCount.x = Global.game.camera.view.x + 30;
+	this.ammoCount.y = Global.game.camera.view.y + SCREEN_HEIGHT - 12;
 };
 
 

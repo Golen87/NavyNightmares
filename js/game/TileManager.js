@@ -1,5 +1,3 @@
-
-// Constructor
 function TileManager ( tileset )
 {
 	this.seed = [randFloat( -10000, 10000 ), randFloat( -10000, 10000 )];
@@ -43,6 +41,7 @@ TileManager.prototype.addSprite = function ( x, y, pos )
 		s.frame = posToIndex( this.tileset, pos );
 		s.key = x + "," + y;
 		s.alpha = 1.0;
+		s.tint = 0xffffff;
 	}
 	else
 	{

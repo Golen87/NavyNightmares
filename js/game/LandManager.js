@@ -1,5 +1,3 @@
-
-// Constructor
 function LandManager ()
 {
 	TileManager.call( this, 'tileset' );

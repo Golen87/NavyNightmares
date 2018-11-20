@@ -1,5 +1,4 @@
 var Global = Global || {};
-
 Global.Boot = function() {};
 
 Global.Boot.prototype = {

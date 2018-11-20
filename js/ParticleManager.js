@@ -1,8 +1,4 @@
-
-// Constructor
-function ParticleManager()
-{
-};
+function ParticleManager() {};
 
 
 /* Smoke burst */

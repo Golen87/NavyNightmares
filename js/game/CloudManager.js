@@ -1,5 +1,3 @@
-
-// Constructor
 function CloudManager ()
 {
 	TileManager.call( this, 'tileset' );
