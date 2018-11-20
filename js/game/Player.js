@@ -179,8 +179,8 @@ Player.prototype.update = function ()
 	var obstacle = ( Global.World.checkCloudAt( gridX + dx, gridY + dy ) ||
 					 Global.World.checkEnemyAt( gridX + dx, gridY + dy ) );
 
-	if ( this.allowInput && this.input[this.direction].holdTimer == 10+6*obstacle ) {
-		this.input[this.direction].holdTimer -= 30;
+	if ( this.allowInput && this.input[this.direction].holdTimer == 6+6*obstacle ) {
+		this.input[this.direction].holdTimer -= 28;
 
 		if ( !Global.World.checkLandAt( gridX + dx, gridY + dy ) ) {
 			if ( !Global.World.checkEnemyAt( gridX + dx, gridY + dy ) ) {
