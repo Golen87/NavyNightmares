@@ -102,10 +102,6 @@ Player.prototype.setupInput = function ()
 
 	this.input = { "up": {}, "left": {}, "down": {}, "right": {}, "space": {} };
 	this.resetInput();
-
-	this.key1 = Global.game.input.keyboard.addKey(Phaser.Keyboard.UP);
-	this.key1.onDown.add(function() {console.log("addKey is DOWN");}, this);
-	this.key1.onUp.add(function() {console.log("addKey is UP");}, this);
 };
 
 Player.prototype.handleInput = function ()
