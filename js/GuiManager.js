@@ -37,6 +37,21 @@ GuiManager.prototype.create = function ()
 	this.ammoCount = Global.game.add.bitmapText( 0, 0, 'Pixelade', '10', 2*13, this.group );
 	this.ammoCount.anchor.setTo( 0.5, 0.5 );
 	Global.World.Player.updateAmmoCount();
+
+
+	/* Score GUI */
+
+	this.scoreGui = this.group.create( 0, 0, 'hud' );
+	this.scoreGui.anchor.setTo( 0.0, 0.0 );
+
+	this.scoreCount = Global.game.add.bitmapText( 0, 0, 'Pixelade', 'Score: 123', 13, this.group );
+	this.scoreCount.anchor.setTo( 0.0, 0.0 );
+
+	this.highscoreCount = Global.game.add.bitmapText( 0, 0, '04b24', 'Highscore: 123', 8, this.group );
+	this.highscoreCount.anchor.setTo( 0.0, 0.0 );
+	this.highscoreCount.tint = 0xBBBBBB;
+
+	Global.World.Player.awardScore( 0 );
 };
 
 GuiManager.prototype.update = function ()
@@ -60,6 +75,15 @@ GuiManager.prototype.update = function ()
 
 	this.ammoCount.x = Global.game.camera.view.x + 30;
 	this.ammoCount.y = Global.game.camera.view.y + SCREEN_HEIGHT - 12;
+
+	this.scoreGui.x = Global.game.camera.view.x;
+	this.scoreGui.y = Global.game.camera.view.y;
+
+	this.scoreCount.x = Global.game.camera.view.x + 5;
+	this.scoreCount.y = Global.game.camera.view.y + 0;
+
+	this.highscoreCount.x = Global.game.camera.view.x + 5;
+	this.highscoreCount.y = Global.game.camera.view.y + 12;
 };
 
 
@@ -67,11 +91,21 @@ GuiManager.prototype.setupMenus = function ()
 {
 	var resume = function() { Global.togglePause(); };
 	var options = function() { this.menuManager.nextMenu( this.optionsMenu ); };
-	var quit = function() { this.menuManager.nextMenu( this.confirmationMenu ); };
+	var quit = function() {
+		if ( this.menuManager.allowInput )
+		{
+			this.menuManager.allowInput = false;
+
+			Global.game.camera.fade(0xffffff, 300);
+			Global.game.time.events.add( 400, function() {
+				Global.game.state.start( 'MainMenu' );
+			}, this);
+		}
+	};
 
 	this.pauseMenu = [
 		[ 'resume', resume.bind(this) ],
-		//[ 'options', options.bind(this) ],
+		[ 'options', options.bind(this) ],
 		[ 'quit', quit.bind(this) ],
 	];
 
@@ -80,6 +114,7 @@ GuiManager.prototype.setupMenus = function ()
 
 	var music = function() {
 		Global.music = !Global.music;
+		Global.Audio.toggleMusic();
 		createCookie( 'music', Global.music ? 'on' : 'off', 100 );
 		this.optionsMenu[this.menuManager.selection][0] = musicText();
 		return musicText();
@@ -93,30 +128,14 @@ GuiManager.prototype.setupMenus = function ()
 	var back = function() { this.menuManager.previousMenu(); };
 
 	this.optionsMenu = [
-		//[ musicText(), music.bind(this) ],
+		[ musicText(), music.bind(this) ],
 		[ soundText(), sound.bind(this) ],
 		[ 'back', back.bind(this) ],
 	];
 
-	var exit = function() {
-		if ( this.menuManager.allowInput )
-		{
-			this.menuManager.allowInput = false;
-
-			Global.game.camera.fade(0xffffff, 300);
-			Global.game.time.events.add( 400, function() {
-				Global.game.state.start( 'MainMenu' );
-			}, this);
-		}
-	};
-
-	this.confirmationMenu = [
-		[ 'quit', exit.bind(this) ],
-		[ 'no', back.bind(this) ],
-	];
 
 	this.gameoverMenu = [
-		[ 'Try again', exit.bind(this) ],
+		[ 'Try again', quit.bind(this) ],
 	];
 };
 

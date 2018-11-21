@@ -31,7 +31,9 @@ CloudManager.prototype.addCloud = function( x, y, index ) {
 	shadow.x += 3;
 	shadow.y += 6;
 
-	return this.addSprite( x, y, Tiles.Cloud.pos[index] );;
+	var s = this.addSprite( x, y, Tiles.Cloud.pos[index] );
+	s.alpha = 0.95;
+	return s;
 };
 
 CloudManager.prototype.createTile = function( x, y ) {

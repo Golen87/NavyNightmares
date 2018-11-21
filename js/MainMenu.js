@@ -14,6 +14,8 @@ Global.MainMenu.prototype = {
 
 		Global.game.camera.flash( 0xffffff, 400 );
 
+		Global.Audio.play( 'waves' );
+
 
 
 		x = SCREEN_WIDTH / 2;
@@ -29,7 +31,7 @@ Global.MainMenu.prototype = {
 		this.titleFg.anchor.x = 0.5;
 
 		/* Selection menu */
-		y += 38;
+		y += 34;
 		this.menuManager = new MenuManager();
 		this.setupMenus();
 		this.menuManager.createMenu( SCREEN_WIDTH/2, y, this.startMenu );
@@ -55,6 +57,7 @@ Global.MainMenu.prototype.setupMenus = function ()
 
 	this.startMenu = [
 		[ 'play', play.bind(this) ],
+		[ 'options', options.bind(this) ],
 		[ 'credits', credits.bind(this) ],
 	];
 
@@ -63,6 +66,7 @@ Global.MainMenu.prototype.setupMenus = function ()
 
 	var music = function() {
 		Global.music = !Global.music;
+		Global.Audio.toggleMusic();
 		createCookie( 'music', Global.music ? 'on' : 'off', 100 );
 		this.optionsMenu[this.menuManager.selection][0] = musicText();
 		return musicText();

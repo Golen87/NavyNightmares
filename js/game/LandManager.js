@@ -8,13 +8,13 @@ function LandManager ()
 
 LandManager.prototype.generateTile = function ( x, y )
 {
-	if (x >= -1 && x <= 1 && y >= -1 && y <= 1) {
+	if ( Math.abs(x) + Math.abs(y) < 3 ) {
 		return TileTypes.Water;
 	}
 
-	var value = noise.simplex2(x/8 + this.seed[0], y/8 + this.seed[1]);
+	var value = noise.simplex2(x/10 + this.seed[0], y/10 + this.seed[1]);
 
-	if (value > 0.6 || value < -0.7) {
+	if (value > 0.55 || value < -0.6) {
 		return TileTypes.Land;
 	}
 

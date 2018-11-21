@@ -8,12 +8,13 @@ function EnemyManager ()
 
 EnemyManager.prototype.generateTile = function ( x, y )
 {
-	if (x >= -1 && x <= 1 && y >= -1 && y <= 1)
+	if ( Math.abs(x) + Math.abs(y) < 4 ) {
 		return TileTypes.None;
+	}
 
-	var value = noise.simplex2(x + this.seed[0], y + this.seed[1]);
+	var value = noise.simplex2(x + this.seed[0], y + this.seed[1]) + noise.simplex2(x/8 - this.seed[0], y/8 - this.seed[1]);
 
-	if (value > -0.3 && value < 0.3) {
+	if (value > -0.3 && value < 0.3 || value > 0.95) {
 		if ( !Global.World.checkLandAt( x, y ) ) {
 			return TileTypes.Enemy;
 		}
@@ -95,7 +96,7 @@ EnemyManager.prototype.checkEnemyAt = function ( x, y )
 
 EnemyManager.prototype.attack = function ( x, y, callback )
 {
-	Global.Audio.play( 'footsteps' );
+	Global.Audio.play( 'spikes' );
 
 	if (this.checkEnemyAt( x, y )) {
 		

@@ -5,19 +5,20 @@ Global.Preload.prototype = {
 	preload: function () {
 		
 		this.game.stage.backgroundColor = '#AAAAFF';
+		this.oceanBg = Global.game.add.tileSprite( -16, -16, (ROOM_WIDTH+2) * 16, (ROOM_HEIGHT+2) * 16, 'tileset', posToIndex( 'tileset', Tiles.Water.pos) );
 
 		// Load game assets
 		
-		this.load.bitmapFont( 'Adventurer', 'assets/fonts/Adventurer/font.png', 'assets/fonts/Adventurer/font.fnt' ); // 16
+		//this.load.bitmapFont( 'Adventurer', 'assets/fonts/Adventurer/font.png', 'assets/fonts/Adventurer/font.fnt' ); // 16
 		//this.load.bitmapFont( 'AdventurerFancy', 'assets/fonts/Adventurer/font_fancy.png', 'assets/fonts/Adventurer/font_fancy.fnt' ); // 16
 		this.load.bitmapFont( 'Pixelade', 'assets/fonts/Pixelade/font.png', 'assets/fonts/Pixelade/font.fnt' ); // 13
-		this.load.bitmapFont( 'PixeladeFancy', 'assets/fonts/Pixelade/font_fancy.png', 'assets/fonts/Pixelade/font_fancy.fnt' ); // 13
+		//this.load.bitmapFont( 'PixeladeFancy', 'assets/fonts/Pixelade/font_fancy.png', 'assets/fonts/Pixelade/font_fancy.fnt' ); // 13
 		//this.load.bitmapFont( 'Fraktur', 'assets/fonts/Fraktur/font.png', 'assets/fonts/Fraktur/font.fnt' ); // 16
 		this.load.bitmapFont( 'TinyUnicode', 'assets/fonts/TinyUnicode/font.png', 'assets/fonts/TinyUnicode/font.fnt' ); // 16
-		this.load.bitmapFont( 'OldWizard', 'assets/fonts/OldWizard/font.png', 'assets/fonts/OldWizard/font.fnt' ); // 16
+		//this.load.bitmapFont( 'OldWizard', 'assets/fonts/OldWizard/font.png', 'assets/fonts/OldWizard/font.fnt' ); // 16
 		//this.load.bitmapFont( 'Peepo', 'assets/fonts/Peepo/font.png', 'assets/fonts/Peepo/font.fnt' ); // 9
 		//this.load.bitmapFont( 'Superscript', 'assets/fonts/Superscript/font.png', 'assets/fonts/Superscript/font.fnt' ); // 10
-		//this.load.bitmapFont( '04b24', 'assets/fonts/04b24/font.png', 'assets/fonts/04b24/font.fnt' ); // 8
+		this.load.bitmapFont( '04b24', 'assets/fonts/04b24/font.png', 'assets/fonts/04b24/font.fnt' ); // 8
 
 		this.load.image( 'glow', 'assets/sprites/glow.png' );
 		this.load.image( 'torchlight', 'assets/sprites/torchlight.png' );
@@ -28,7 +29,7 @@ Global.Preload.prototype = {
 		this.load.image( 'harpoon-icon', 'assets/sprites/harpoon-icon.png' );
 		this.load.image( 'small-hud', 'assets/sprites/small-hud.png' );
 
-		this.load.spritesheet( 'tileset', 'assets/sprites/tileset.png', 16, 16 );
+		//this.load.spritesheet( 'tileset', 'assets/sprites/tileset.png', 16, 16 );
 		this.load.spritesheet( 'monsters', 'assets/sprites/monsters.png', 16, 16 );
 		this.load.spritesheet( 'player', 'assets/sprites/player.png', 32, 32 );
 		this.load.spritesheet( 'harpoon', 'assets/sprites/harpoon.png', 64, 64 );
@@ -59,10 +60,11 @@ Global.Preload.prototype = {
 		this.load.audio( 'rhino', 'assets/sounds/monsters/rhino.ogg' );
 		this.load.audio( 'spider', 'assets/sounds/monsters/spider.ogg' );
 		this.load.audio( 'slime', 'assets/sounds/monsters/slime.ogg' );
-		this.load.audio( 'creature', 'assets/sounds/monsters/creature.ogg' );
-		this.load.audio( 'monsterroom-spawn', 'assets/sounds/monsters/monsterroom-spawn.ogg' );
+		//this.load.audio( 'creature', 'assets/sounds/monsters/creature.ogg' );
+		//this.load.audio( 'monsterroom-spawn', 'assets/sounds/monsters/monsterroom-spawn.ogg' );
 
 		this.load.audio( 'menu', 'assets/sounds/menu.ogg' );
+		this.load.audio( 'waves', 'assets/sounds/waves.wav' );
 
 
 		// Loading progress bar

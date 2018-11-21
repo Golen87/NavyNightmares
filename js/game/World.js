@@ -126,16 +126,17 @@ World.prototype.checkLandAt = function ( x, y )
 	return this.landManager.checkLandAt( x, y );
 };
 
-World.prototype.checkLandNearby = function ( x, y )
+World.prototype.checkEnemyCount = function ( x, y )
 {
+	var count = 0;
 	for ( var dx = -1; dx < 2; dx++ ) {
 		for ( var dy = -1; dy < 2; dy++ ) {
-			if ( this.landManager.checkLandAt( x + dx, y + dy ) ) {
-				return true;
+			if ( this.enemyManager.checkEnemyAt( x + dx, y + dy ) ) {
+				count += 1;
 			}
 		}
 	}
-	return false;
+	return count;
 };
 
 World.prototype.checkEnemyAt = function ( x, y )
@@ -166,6 +167,7 @@ World.prototype.revealTile = function ( x, y )
 			this.enemyManager.reveal( x, y );
 		}
 		this.cloudManager.loadArea( this.camGoal.x, this.camGoal.y );
+		this.Player.awardScore( 1 );
 	}
 };
 

@@ -139,6 +139,11 @@ Array.prototype.equals = function (array) {
 	}	   
 	return true;
 }
+
+function addDots(n) {
+	return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 // Hide method from for-in loops
 Object.defineProperty(Array.prototype, "equals", {enumerable: false});
 

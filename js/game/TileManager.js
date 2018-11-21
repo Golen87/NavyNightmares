@@ -85,10 +85,10 @@ TileManager.prototype.loadArea = function ( worldX, worldY )
 {
 	this.clearOutOfView();
 
-	startX = Global.game.camera.x - 16;
-	startY = Global.game.camera.y - 16;
-	endX = Global.game.camera.x + 16 * ROOM_WIDTH + 16;
-	endY = Global.game.camera.y + 16 * ROOM_HEIGHT + 16;
+	var startX = Global.game.camera.x - 16;
+	var startY = Global.game.camera.y - 16;
+	var endX = Global.game.camera.x + 16 * ROOM_WIDTH + 16;
+	var endY = Global.game.camera.y + 16 * ROOM_HEIGHT + 16;
 
 	for ( var y = startY.grid(); y < endY.grid(); y++ ) {
 		for ( var x = startX.grid(); x < endX.grid(); x++ ) {

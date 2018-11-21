@@ -7,7 +7,9 @@ Player.prototype.create = function ( x, y, playerGroup, bubbleGroup )
 	this.prevGridPos = new Phaser.Point(0, 0);
 	this.gridPos = new Phaser.Point(0, 0);
 
+	this.score = 0;
 	this.harpoonCount = 10;
+	this.killCount = 0;
 
 	this.allowInput = true;
 
@@ -229,7 +231,15 @@ Player.prototype.update = function ()
 			Global.game.time.events.add( Phaser.Timer.SECOND * 5 / 16, function() {
 
 				function reviveInput( success ) {
-					if ( !success )
+					if ( success ) {
+						this.awardScore( 5 );
+						this.killCount += 1;
+						if ( this.killCount % 10 == 0 ) {
+							Global.Audio.play( 'spikes' );
+							this.updateAmmoCount( +1 );
+						}
+					}
+					else
 						this.updateAmmoCount( -1 );
 
 					this.updateCount();
@@ -262,6 +272,8 @@ Player.prototype.updateAmmoCount = function ( rel )
 {
 	if (rel) {
 		this.harpoonCount += rel;
+		this.harpoonCount = this.harpoonCount.clamp(0, 10);
+
 		if ( this.harpoonCount <= 0 ) {
 			this.defeat();
 
@@ -273,6 +285,8 @@ Player.prototype.updateAmmoCount = function ( rel )
 
 	Global.Gui.ammoCount.setText( this.harpoonCount );
 	Global.Gui.ammoCount.tint = ( this.harpoonCount > 1 ) ? 0xFFFFFF : 0xFF0000;
+	Global.Gui.ammoCount.alpha = 0;
+	Global.game.add.tween( Global.Gui.ammoCount ).to({ alpha: 1.0 }, 500, Phaser.Easing.Linear.In, true );
 };
 
 Player.prototype.updateCount = function ()
@@ -280,18 +294,28 @@ Player.prototype.updateCount = function ()
 	var gridX = Math.round( ( this.sprite.goalX ) / 16 );
 	var gridY = Math.round( ( this.sprite.goalY ) / 16 );
 
-	var count = 0;
-	for ( var dx = -1; dx < 2; dx++ ) {
-		for ( var dy = -1; dy < 2; dy++ ) {
-			if ( Global.World.checkEnemyAt( gridX + dx, gridY + dy ) ) {
-				count += 1;
-			}
-		}
-	}
+	var count = Global.World.checkEnemyCount( gridX, gridY );
 
-	this.bubbleText.setText(count.toString());
+	this.bubbleText.setText( count.toString() );
 	this.bubbleText.anchor.x = Math.round(this.bubbleText.textWidth / 2) / this.bubbleText.textWidth;
 	this.bubbleText.anchor.y = Math.round(this.bubbleText.textHeight / 2) / this.bubbleText.textHeight;
+};
+
+Player.prototype.awardScore = function ( rel )
+{
+	if (rel) {
+		this.score += rel;
+	}
+
+	var highscore = readCookie( "highscore" ) || 0;
+	if ( this.score > highscore ) {
+		highscore = this.score;
+		createCookie( "highscore", highscore, 3650 );
+		Global.Gui.highscoreCount.tint = 0xFFFF00;
+	}
+
+	Global.Gui.scoreCount.setText( "Score: " + addDots( this.score ) );
+	Global.Gui.highscoreCount.setText( "Highscore: " + addDots( highscore ) );
 };
 
 

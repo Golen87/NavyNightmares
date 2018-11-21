@@ -21,13 +21,9 @@ Global.Credits.prototype = {
 		y += 16;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Mans Gezelius', 13 );
 		text.anchor.x = 0.5;
-		y += 16;
+		y += 12;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Rasmus Vesik', 13 );
 		text.anchor.x = 0.5;
-
-		/* Darkness around edges */
-		this.fog = Global.game.add.sprite( 0, 0, 'fog' );
-		this.fog.blendMode = Phaser.blendModes.MULTIPLY;
 
 		/* Copyright */
 		var text = this.add.bitmapText( 1, SCREEN_HEIGHT+1, 'Pixelade', '©2018 LiU Fall GameJam', 13 );
