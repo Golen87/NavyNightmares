@@ -149,6 +149,11 @@ World.prototype.checkCloudAt = function ( x, y )
 	return this.cloudManager.checkCloudAt( x, y );
 };
 
+World.prototype.canAttackTile = function ( x, y )
+{
+	return !this.enemyManager.checkBloodOrMissAt( x, y );
+};
+
 World.prototype.attackTile = function ( x, y, reviveInput )
 {
 	function callback( success ) {
@@ -168,6 +173,19 @@ World.prototype.revealTile = function ( x, y )
 		}
 		this.cloudManager.loadArea( this.camGoal.x, this.camGoal.y );
 		this.Player.awardScore( 1 );
+	}
+};
+
+World.prototype.revealLand = function ( x, y )
+{
+	for ( var i = 0; i < 4; i++ ) {
+		var dx = [-1,0,1,0][i];
+		var dy = [0,-1,0,1][i];
+		if ( this.landManager.checkLandAt( x+dx, y+dy ) && this.cloudManager.checkCloudAt( x+dx, y+dy ) ) {
+			this.cloudManager.reveal( x+dx, y+dy );
+			this.cloudManager.loadArea( this.camGoal.x, this.camGoal.y );
+			this.Player.awardScore( 1 );
+		}
 	}
 };
 

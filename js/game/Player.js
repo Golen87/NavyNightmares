@@ -188,6 +188,7 @@ Player.prototype.update = function ()
 				this.damage();
 			}
 			Global.World.revealTile( gridX + dx, gridY + dy );
+			Global.World.revealLand( gridX + dx, gridY + dy );
 		}
 	}
 
@@ -213,48 +214,45 @@ Player.prototype.update = function ()
 	if ( this.allowInput ) {
 		if ( this.input.space.justDown && !this.harpoon.exists && this.harpoonCount > 0 ) {
 
-			this.fireHarpoon();
-			this.harpoon.x = this.sprite.x;
-			this.harpoon.y = this.sprite.y;
+			var dx = (this.direction == 'right') - (this.direction == 'left');
+			var dy = (this.direction == 'down') - (this.direction == 'up');
 
-			Global.Audio.play( 'swing' );
+			if ( Global.World.canAttackTile( gridX + dx, gridY + dy ) ) {
+				this.fireHarpoon();
 
-			this.allowInput = false;
-			Global.game.time.events.add( Phaser.Timer.SECOND * 1 / 16, function() {
+				this.allowInput = false;
+				Global.game.time.events.add( Phaser.Timer.SECOND * 1 / 16, function() {
 
-				var dx = (this.direction == 'right') - (this.direction == 'left');
-				var dy = (this.direction == 'down') - (this.direction == 'up');
-				Global.World.revealTile( gridX+dx, gridY+dy );
+					Global.World.revealTile( gridX+dx, gridY+dy );
 
-			}, this );
+				}, this );
 
-			Global.game.time.events.add( Phaser.Timer.SECOND * 5 / 16, function() {
+				Global.game.time.events.add( Phaser.Timer.SECOND * 5 / 16, function() {
 
-				function reviveInput( success ) {
-					if ( success ) {
-						this.awardScore( 5 );
-						this.killCount += 1;
-						if ( this.killCount % 10 == 0 ) {
-							Global.Audio.play( 'spikes' );
-							this.updateAmmoCount( +1 );
+					function reviveInput( success ) {
+						if ( success ) {
+							this.awardScore( 5 );
+							this.killCount += 1;
+							if ( this.killCount % 10 == 0 ) {
+								Global.Audio.play( 'spikes' );
+								this.updateAmmoCount( +1 );
+							}
 						}
+						else
+							this.updateAmmoCount( -1 );
+
+						this.updateCount();
+						this.resetInput();
+
+						if ( this.damageState != 'dead' )
+							this.allowInput = true;
 					}
-					else
-						this.updateAmmoCount( -1 );
 
-					this.updateCount();
-					this.resetInput();
+					Global.World.attackTile( gridX+dx, gridY+dy, reviveInput.bind(this) );
+					Global.World.revealTile( gridX+dx, gridY+dy );
 
-					if ( this.damageState != 'dead' )
-						this.allowInput = true;
-				}
-
-				var dx = (this.direction == 'right') - (this.direction == 'left');
-				var dy = (this.direction == 'down') - (this.direction == 'up');
-				Global.World.attackTile( gridX+dx, gridY+dy, reviveInput.bind(this) );
-				Global.World.revealTile( gridX+dx, gridY+dy );
-
-			}, this );
+				}, this );
+			}
 		}
 	}
 };
@@ -262,10 +260,15 @@ Player.prototype.update = function ()
 
 Player.prototype.fireHarpoon = function ()
 {
-	this.harpoon.reset();
+	this.harpoon.reset(
+		this.sprite.x,
+		this.sprite.y
+	);
 
 	var name = '{0}_{1}'.format( 'fire', this.direction );
 	this.harpoon.animations.play( name, 16, false, true );
+
+	Global.Audio.play( 'swing' );
 };
 
 Player.prototype.updateAmmoCount = function ( rel )

@@ -94,6 +94,11 @@ EnemyManager.prototype.checkEnemyAt = function ( x, y )
 	return this.getTile(x,y) == TileTypes.Enemy;
 };
 
+EnemyManager.prototype.checkBloodOrMissAt = function ( x, y )
+{
+	return this.getTile(x,y) == TileTypes.Blood || this.getTile(x,y) == TileTypes.Miss;
+};
+
 EnemyManager.prototype.attack = function ( x, y, callback )
 {
 	Global.Audio.play( 'spikes' );
