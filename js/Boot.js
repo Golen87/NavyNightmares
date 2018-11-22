@@ -50,9 +50,12 @@ Global.Boot.prototype = {
 	},
 
 	readSettings: function() {
-		if ( readCookie( 'music' ) == 'off' )
-			Global.music = false;
-		if ( readCookie( 'sound' ) == 'off' )
-			Global.sound = false;
+		var music = readCookie( 'music' );
+		if ( !isNaN(music) )
+			Global.music = clamp( music, 0, 1 );
+
+		var sound = readCookie( 'sound' );
+		if ( !isNaN(sound) )
+			Global.sound = clamp( sound, 0, 1 );
 	},
 };

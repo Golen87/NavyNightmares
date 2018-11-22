@@ -104,38 +104,52 @@ GuiManager.prototype.setupMenus = function ()
 	};
 
 	this.pauseMenu = [
-		[ 'resume', resume.bind(this) ],
-		[ 'options', options.bind(this) ],
-		[ 'quit', quit.bind(this) ],
+		[ 'resume', resume.bind(this), null ],
+		[ 'options', options.bind(this), null ],
+		[ 'quit', quit.bind(this), null ],
 	];
 
-	function musicText() { return 'music {0}'.format(Global.music ? 'on' : 'off'); }
-	function soundText() { return 'sound {0}'.format(Global.sound ? 'on' : 'off'); }
+	function musicText() {
+		var index = Math.round( 5 * Global.music );
+		var slider = '......'.replaceAt( index, '|' );
+		return 'Music: [' + slider + ']';
+	}
+	function soundText() {
+		var index = Math.round( 5 * Global.sound );
+		var slider = '......'.replaceAt( index, '|' );
+		return 'Sound: [' + slider + ']';
+	}
 
-	var music = function() {
-		Global.music = !Global.music;
-		Global.Audio.toggleMusic();
-		createCookie( 'music', Global.music ? 'on' : 'off', 100 );
-		this.optionsMenu[this.menuManager.selection][0] = musicText();
-		return musicText();
+	var music = function( inc ) {
+		Global.music = clamp( Global.music + 0.2 * inc, 0, 1 );
+		Global.music = Math.round( Global.music * 10 ) / 10;
+		Global.Audio.updateMusic();
+		createCookie( 'music', Global.music, 100 );
+
+		var newText = musicText();
+		this.optionsMenu[this.menuManager.selection][0] = newText;
+		return newText;
 	};
-	var sound = function() {
-		Global.sound = !Global.sound;
-		createCookie( 'sound', Global.sound ? 'on' : 'off', 100 );
-		this.optionsMenu[this.menuManager.selection][0] = soundText();
-		return soundText();
+	var sound = function( inc ) {
+		Global.sound = clamp( Global.sound + 0.2 * inc, 0, 1 );
+		Global.sound = Math.round( Global.sound * 10 ) / 10;
+		createCookie( 'sound', Global.sound, 100 );
+
+		var newText = soundText();
+		this.optionsMenu[this.menuManager.selection][0] = newText;
+		return newText;
 	};
 	var back = function() { this.menuManager.previousMenu(); };
 
 	this.optionsMenu = [
-		[ musicText(), music.bind(this) ],
-		[ soundText(), sound.bind(this) ],
-		[ 'back', back.bind(this) ],
+		[ musicText(), null, music.bind(this) ],
+		[ soundText(), null, sound.bind(this) ],
+		[ 'back', back.bind(this), null ],
 	];
 
 
 	this.gameoverMenu = [
-		[ 'Try again', quit.bind(this) ],
+		[ 'Try again', quit.bind(this), null ],
 	];
 };
 

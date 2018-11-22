@@ -29,6 +29,15 @@ MenuManager.prototype.setupInput = function ()
 	var key = Global.game.input.keyboard.addKey( Phaser.Keyboard.W );
 	key.onDown.add( function() {this.nextChoice( -1 );}, this );
 
+	var key = Global.game.input.keyboard.addKey( Phaser.Keyboard.RIGHT );
+	key.onDown.add( function() {this.pickChoice( 1 );}, this );
+	var key = Global.game.input.keyboard.addKey( Phaser.Keyboard.D );
+	key.onDown.add( function() {this.pickChoice( 1 );}, this );
+	var key = Global.game.input.keyboard.addKey( Phaser.Keyboard.LEFT );
+	key.onDown.add( function() {this.pickChoice( -1 );}, this );
+	var key = Global.game.input.keyboard.addKey( Phaser.Keyboard.A );
+	key.onDown.add( function() {this.pickChoice( -1 );}, this );
+
 	var key = Global.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 	key.onDown.add( function() {this.pickChoice();}, this );
 	var key = Global.game.input.keyboard.addKey( Phaser.Keyboard.ENTER );
@@ -58,11 +67,7 @@ MenuManager.prototype.createMenu = function ( x, y, choiceList )
 	this.labels = [];
 	for ( var i=0; i<this.choiceList.length; i++ )
 	{
-		var label = Global.game.add.bitmapText( x, y, 'TinyUnicode', this.choiceList[i][0], 16 );
-		label.anchor.x = Math.round(label.textWidth / 2) / label.textWidth;
-		label.anchor.y = Math.round(label.textHeight / 2) / label.textHeight;
-		label.tint = 0x333333;
-		label.function = this.choiceList[i][1];
+		var label = this.createLabel( x, y, this.choiceList[i] );
 		this.labels.push( label );
 		y += this.separation;
 	}
@@ -79,6 +84,16 @@ MenuManager.prototype.createMenu = function ( x, y, choiceList )
 	this.corners[3].scale.set( -1, -1 );
 
 	this.nextChoice( 0 );
+};
+
+MenuManager.prototype.createLabel = function ( x, y, choice )
+{
+	var label = Global.game.add.bitmapText( x, y, 'TinyUnicode', choice[0], 16 );
+	label.anchor.x = Math.round(label.textWidth * 0.5) / label.textWidth;
+	label.anchor.y = Math.round(label.textHeight * 0.6) / label.textHeight;
+	label.tint = 0x333333;
+	label.function = choice[1];
+	return label;
 };
 
 MenuManager.prototype.nextMenu = function ( choiceList )
@@ -98,10 +113,7 @@ MenuManager.prototype.nextMenu = function ( choiceList )
 	this.labels = [];
 	for ( var i=0; i<this.choiceList.length; i++ )
 	{
-		var label = Global.game.add.bitmapText( x, y, 'TinyUnicode', this.choiceList[i][0], 16 );
-		label.anchor.set( 0.5 );
-		label.tint = 0x333333;
-		label.function = this.choiceList[i][1];
+		var label = this.createLabel( x, y, this.choiceList[i] );
 		this.labels.push( label );
 		y += this.separation;
 
@@ -122,6 +134,9 @@ MenuManager.prototype.nextMenu = function ( choiceList )
 
 MenuManager.prototype.previousMenu = function ()
 {
+	if ( this.history.length == 0 )
+		return;
+
 	for ( var i=0; i<this.labels.length; i++ )
 	{
 		Global.game.add.tween( this.labels[i] ).to({ x: this.startPosition.x + this.animationDist, alpha: 0 }, this.animationTime, this.easing, true, this.animationDelay*i );
@@ -207,11 +222,15 @@ MenuManager.prototype.nextChoice = function ( inc )
 	}
 };
 
-MenuManager.prototype.pickChoice = function ()
+MenuManager.prototype.pickChoice = function ( inc=null )
 {
 	if ( this.allowInput )
 	{
-		var newText = this.choiceList[this.selection][1]();
+		if ( inc )
+			var newText = this.choiceList[this.selection][2]( inc );
+		else
+			var newText = this.choiceList[this.selection][1]();
+
 		if ( newText )
 		{
 			this.labels[this.selection].text = newText;

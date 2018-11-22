@@ -2,10 +2,8 @@ function AudioManager()
 {
 	this.sounds = {};
 
-	var masterVol = 0.8;
-
 	var name = 'footsteps';
-	var vol = 0.05 * masterVol;
+	var vol = 0.05;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.3, vol );
@@ -15,7 +13,7 @@ function AudioManager()
 	this.sounds[name].markers = ['1', '2', '3', '4'];
 
 	var name = 'swing';
-	var vol = 0.15 * masterVol;
+	var vol = 0.15;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.allowMultiple = true;
@@ -26,7 +24,7 @@ function AudioManager()
 	this.sounds[name].markers = ['1', '2', '3', '4'];
 
 	var name = 'chop';
-	var vol = 0.3 * masterVol;
+	var vol = 0.3;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.2, vol );
@@ -35,7 +33,7 @@ function AudioManager()
 	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'eating';
-	var vol = 0.4 * masterVol;
+	var vol = 0.4;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.95, vol );
@@ -44,13 +42,13 @@ function AudioManager()
 	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'death';
-	var vol = 0.3 * masterVol;
+	var vol = 0.3;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
 
 	var name = 'hurt';
-	var vol = 0.4 * masterVol;
+	var vol = 0.4;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.4, vol );
@@ -59,13 +57,13 @@ function AudioManager()
 	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'break';
-	var vol = 0.4 * masterVol;
+	var vol = 0.4;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
 
 	var name = 'boxPush';
-	var vol = 0.4 * masterVol;
+	var vol = 0.4;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.4, vol );
@@ -74,7 +72,7 @@ function AudioManager()
 	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'blockPush';
-	var vol = 0.4 * masterVol;
+	var vol = 0.4;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.9, vol );
@@ -83,7 +81,7 @@ function AudioManager()
 	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'crystal';
-	var vol = 0.3 * masterVol;
+	var vol = 0.3;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.allowMultiple = true;
@@ -94,7 +92,7 @@ function AudioManager()
 	this.sounds[name].markers['off'] = ['off'];
 
 	var name = 'spikes';
-	var vol = 0.2 * masterVol;
+	var vol = 0.2;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.2, vol );
@@ -103,19 +101,19 @@ function AudioManager()
 	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'chest';
-	var vol = 0.3 * masterVol;
+	var vol = 0.3;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
 
 	var name = 'open';
-	var vol = 0.3 * masterVol;
+	var vol = 0.3;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
 
 	var name = 'pressureplate';
-	var vol = 0.15 * masterVol;
+	var vol = 0.15;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( 'on', 0.0, 0.2, vol );
@@ -125,13 +123,13 @@ function AudioManager()
 	this.sounds[name].markers['off'] = ['off'];
 
 	var name = 'monsterroom-spawn';
-	var vol = 0.4 * masterVol;
+	var vol = 0.4;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
 
 	var name = 'menu';
-	var vol = 0.3 * masterVol;
+	var vol = 0.3;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.addMarker( 'select', 0.0, 0.2, vol );
@@ -145,8 +143,8 @@ function AudioManager()
 	this.sounds[name].markers['click'] = ['click'];
 
 
-	var vol = 0.4 * masterVol;
-	var cryVol = 0.2 * masterVol;
+	var vol = 0.4;
+	var cryVol = 0.2;
 
 	var name = 'rat';
 	this.sounds[name] = {};
@@ -252,7 +250,7 @@ function AudioManager()
 	this.sounds[name].markers['death'] = ['death_1', 'death_2'];
 
 	var name = 'waves';
-	var vol = 0.5 * masterVol * Global.music;
+	var vol = Global.music;
 	this.sounds[name] = {};
 	this.sounds[name].sound = Global.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
@@ -272,27 +270,26 @@ AudioManager.prototype.play = function ( name, marker=null )
 	if ( !Global.sound )
 		return;
 
+	var vol = this.sounds[name].sound.volume;
+	var index = '';
 	var markers = this.getMarkers( name, marker );
 	if ( markers )
 	{
-		do
-		{
-			var index = markers.choice();
+		do {
+			index = markers.choice();
 		}
 		while (
-			this.sounds[name].lastPlayed == index && markers.length > 1 );
+			this.sounds[name].lastPlayed == index && markers.length > 1
+		);
 
 		this.sounds[name].lastPlayed = index;
-		this.sounds[name].sound.play( index );
+		vol = this.sounds[name].sound.markers[index]['volume'];
 	}
-	else
-	{
-		this.sounds[name].sound.play();
-	}
+
+	this.sounds[name].sound.play( index, 0, Global.sound * vol );
 };
 
-AudioManager.prototype.toggleMusic = function ()
+AudioManager.prototype.updateMusic = function ()
 {
-	var masterVol = 0.8;
-	this.sounds['waves'].sound.volume = 0.5 * masterVol * Global.music;
+	this.sounds['waves'].sound.volume = Global.music;
 };

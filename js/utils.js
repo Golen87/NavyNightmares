@@ -12,6 +12,10 @@ if ( !String.prototype.format ) {
 	};
 }
 
+String.prototype.replaceAt=function(index, replacement) {
+	return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
+}
+
 function isInt( value ) {
 	if ( isNaN( value ) ) {
 		return false;
@@ -22,6 +26,10 @@ function isInt( value ) {
 
 Number.prototype.clamp = function( min, max ) {
 	return Math.min( Math.max( this, min ), max );
+};
+
+function clamp( value, min, max ) {
+	return Math.min( Math.max( value, min ), max );
 };
 
 Number.prototype.grid = function() {

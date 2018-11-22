@@ -33,5 +33,5 @@ Global.inputOffset = new Phaser.Point( 0, 0 );
 Global.paused = false;
 
 /* Options */
-Global.music = true;
-Global.sound = true;
+Global.music = 0.4;
+Global.sound = 0.8;
