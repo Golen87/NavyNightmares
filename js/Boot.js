@@ -51,11 +51,12 @@ Global.Boot.prototype = {
 
 	readSettings: function() {
 		var music = readCookie( 'music' );
-		if ( typeof music == null )
+		console.log(music, music != null);
+		if ( music != null )
 			Global.music = clamp( music, 0, 1 );
 
 		var sound = readCookie( 'sound' );
-		if ( typeof sound == null )
+		if ( sound != null )
 			Global.sound = clamp( sound, 0, 1 );
 	},
 };
