@@ -226,9 +226,9 @@ MenuManager.prototype.pickChoice = function ( inc=null )
 {
 	if ( this.allowInput )
 	{
-		if ( inc )
+		if ( inc && this.choiceList[this.selection][2] )
 			var newText = this.choiceList[this.selection][2]( inc );
-		else
+		else if ( this.choiceList[this.selection][1] )
 			var newText = this.choiceList[this.selection][1]();
 
 		if ( newText )
